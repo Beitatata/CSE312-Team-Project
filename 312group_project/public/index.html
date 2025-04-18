@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block title %}Pac-Man Home{% endblock %}
+{% block content %}
+  <h1>🟡 Welcome to Pac-Man</h1>
+  {% if username %}
+    <p>Hello, {{ username }}!</p>
+  {% else %}
+    <p>Please login or register to continue.</p>
+  {% endif %}
+{% endblock %}

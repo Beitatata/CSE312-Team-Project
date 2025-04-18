@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Register - Pac-Man{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>🟡 Register</h1>
+
+  <form id="register-form">
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <input type="password" name="password2" placeholder="Confirm Password" required />
+    <button type="submit">Register</button>
+  </form>
+
+  <p id="error"></p>
+  <a href="/login" class="link">Already have an account? Login</a>
+</div>
+
+<style>
+  .card {
+    background-color: #111;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(255, 255, 0, 0.4);
+    width: 400px;
+    text-align: center;
+    margin: auto;
+  }
+
+  input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 14px;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.2s ease, background-color 0.2s;
+  }
+
+  button:hover {
+    background-color: white;
+    transform: scale(1.05);
+  }
+
+  .link {
+    margin-top: 20px;
+    color: yellow;
+    display: block;
+    font-size: 12px;
+    text-decoration: underline;
+  }
+
+  #error {
+    color: red;
+    margin-top: 10px;
+    font-size: 12px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+  }
+</style>
+
+<script>
+  const form = document.getElementById("register-form");
+  const errorDisplay = document.getElementById("error");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const encoded = new URLSearchParams(formData);
+
+    const response = await fetch("/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: encoded
+    });
+
+    if (response.redirected) {
+      window.location.href = response.url;
+    } else {
+      const data = await response.json();
+      errorDisplay.textContent = data.error || "Registration failed";
+      errorDisplay.style.display = "block";
+      errorDisplay.style.opacity = 1;
+    }
+  });
+</script>
+{% endblock %}

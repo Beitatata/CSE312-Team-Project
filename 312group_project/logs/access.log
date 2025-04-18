@@ -1,0 +1,41 @@
+2025-04-18 01:45:08,027 start
+2025-04-18 01:45:08,234 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.84.184.46:8080
+2025-04-18 01:45:08,234 [33mPress CTRL+C to quit[0m
+2025-04-18 01:45:22,504 2025-04-18T05:45:22.504545 127.0.0.1 GET /register
+2025-04-18 01:45:22,516 127.0.0.1 - - [18/Apr/2025 01:45:22] "GET /register HTTP/1.1" 200 -
+2025-04-18 01:45:26,552 2025-04-18T05:45:26.552307 127.0.0.1 GET /login
+2025-04-18 01:45:26,558 127.0.0.1 - - [18/Apr/2025 01:45:26] "GET /login HTTP/1.1" 200 -
+2025-04-18 01:45:28,032 2025-04-18T05:45:28.032130 127.0.0.1 GET /login
+2025-04-18 01:45:28,033 127.0.0.1 - - [18/Apr/2025 01:45:28] "GET /login HTTP/1.1" 200 -
+2025-04-18 01:47:02,500 start
+2025-04-18 01:47:02,521 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.84.184.46:8080
+2025-04-18 01:47:02,522 [33mPress CTRL+C to quit[0m
+2025-04-18 01:51:16,623 start
+2025-04-18 05:53:54,330 start
+2025-04-18 05:53:54,337 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.23.0.3:8080
+2025-04-18 05:53:54,337 [33mPress CTRL+C to quit[0m
+2025-04-18 05:54:02,508 2025-04-18T05:54:02.507207 172.23.0.1 GET /register
+2025-04-18 05:54:02,532 172.23.0.1 - - [18/Apr/2025 05:54:02] "GET /register HTTP/1.1" 200 -
+2025-04-18 06:04:34,383 start
+2025-04-18 06:04:34,390 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.23.0.3:8080
+2025-04-18 06:04:34,391 [33mPress CTRL+C to quit[0m
+2025-04-18 06:04:52,645 start
+2025-04-18 06:04:52,652 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.23.0.3:8080
+2025-04-18 06:04:52,652 [33mPress CTRL+C to quit[0m
+2025-04-18 06:04:57,144 2025-04-18T06:04:57.143508 172.23.0.1 GET /register
+2025-04-18 06:04:57,155 172.23.0.1 - - [18/Apr/2025 06:04:57] "GET /register HTTP/1.1" 200 -
