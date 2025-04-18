@@ -8,6 +8,8 @@ import logging
 from datetime import datetime
 from auth import extract_credentials, validate_password
 import flask.cli
+from flask_socketio import SocketIO
+from datetime import timezone
 # ignore flask words
 flask.cli.show_server_banner = lambda *args, **kwargs: None
 # check it is in docker or not
@@ -19,8 +21,10 @@ else:
 
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
-app = Flask(__name__, template_folder="public")
+app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "default-secret-key")
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:8080", allow_credentials=True)
+
 
 # Logging setup
 logging.basicConfig(
@@ -35,7 +39,7 @@ def log_request():
     ip = request.remote_addr
     method = request.method
     path = request.path
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(timezone.utc).isoformat()
     logging.info(f"{timestamp} {ip} {method} {path}")
 
 
@@ -121,7 +125,8 @@ def login():
         "auth_token",
         token,
         httponly=True,
-        max_age=60 * 60 * 24 * 7  # 7 days
+        max_age=60 * 60 * 24 * 7,
+        path="/"
     )
     return response
 
@@ -133,5 +138,17 @@ def logout():
     return response
 
 
+@app.route("/game")
+def game():
+    user = get_authenticated_user()
+    if not user:
+        return redirect("/login")
+    return render_template("game.html", username=user["username"])
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=False)
+    import game_socket  # 👈 只是导入，不再从它那 import socketio
+    socketio.run(app, host="127.0.0.1", port=8080, debug=True)
+
+
+
