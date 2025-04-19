@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game - MMO Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3a10e5;
+            --secondary-color: #ff5722;
+            --dark-color: #1e1e2f;
+            --light-color: #f5f5f5;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --ui-dark: rgba(20, 20, 35, 0.85);
+            --ui-border: rgba(58, 16, 229, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            color: var(--light-color);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .game-header {
+            background: var(--ui-dark);
+            border-bottom: 2px solid var(--ui-border);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(58, 16, 229, 0.5);
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .game-content {
+            flex: 1;
+            background: linear-gradient(135deg, #0f0f1b, #1a1a2e);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #game-canvas {
+            width: 1200px;
+            height: 1200px;
+            display: block;
+            margin: 40px auto;
+            background: transparent;
+        }
+
+
+
+
+        .game-message {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ui-dark);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--ui-border);
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: fadeInOut 5s forwards;
+        }
+
+        .game-controls {
+            background: var(--ui-dark);
+            border-top: 2px solid var(--ui-border);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: transparent;
+            color: var(--light-color);
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 2px solid;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-home {
+            border-color: var(--light-color);
+        }
+
+        .btn-home:hover {
+            background: var(--light-color);
+            color: var(--dark-color);
+        }
+
+        .btn-action {
+            border-color: var(--primary-color);
+        }
+
+        .btn-action:hover {
+            background: var(--primary-color);
+            color: var(--light-color);
+            box-shadow: 0 0 15px rgba(58, 16, 229, 0.5);
+        }
+
+        .btn-danger {
+            border-color: var(--error-color);
+        }
+
+        .btn-danger:hover {
+            background: var(--error-color);
+            color: var(--light-color);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+        }
+
+        .game-stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--ui-dark);
+            border: 1px solid var(--ui-border);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Orbitron', sans-serif;
+            min-width: 150px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .mini-map {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 200px;
+            background: var(--ui-dark);
+            border: 1px solid var(--ui-border);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .mini-map-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .mini-map-content {
+            width: 100%;
+            height: calc(100% - 20px);
+            background: #111;
+            border-radius: 5px;
+        }
+
+        /* Animation */
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            10% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            80% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+        }
+
+        .key-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: var(--ui-dark);
+            border: 1px solid var(--ui-border);
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .key-controls h3 {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .key-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .key {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .key-action {
+            font-size: 0.8rem;
+            color: var(--light-color);
+        }
+        #stars-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #game-canvas {
+            position: relative;
+            z-index: 1;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="user-info">
+                <div class="user-avatar">{{ current_user.username[0].upper() }}</div>
+                <div class="user-name">{{ current_user.username }}</div>
+            </div>
+            <div>
+                <a href="{{ url_for('index') }}" class="btn btn-home">Home</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+
+        <div class="game-content">
+            <canvas id="stars-canvas"></canvas> <!-- ⭐ 背景星星层 -->
+            <canvas id="game-canvas"></canvas>
+            <div class="game-message">Welcome, {{ current_user.username }}! Move with WASD keys.</div>
+
+            <div class="game-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Level</span>
+                    <span class="stat-value">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">HP</span>
+                    <span class="stat-value">100/100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">XP</span>
+                    <span class="stat-value">0/100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Gold</span>
+                    <span class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div class="mini-map">
+                <div class="mini-map-title">World Map</div>
+                <div class="mini-map-content"></div>
+            </div>
+
+            <div class="key-controls">
+                <h3>Controls</h3>
+                <div class="key-item">
+                    <span class="key">W</span>
+                    <span class="key-action">Move Up</span>
+                </div>
+                <div class="key-item">
+                    <span class="key">A</span>
+                    <span class="key-action">Move Left</span>
+                </div>
+                <div class="key-item">
+                    <span class="key">S</span>
+                    <span class="key-action">Move Down</span>
+                </div>
+                <div class="key-item">
+                    <span class="key">D</span>
+                    <span class="key-action">Move Right</span>
+                </div>
+                <div class="key-item">
+                    <span class="key">E</span>
+                    <span class="key-action">Interact</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button class="btn btn-action" onclick="alert('Chat feature coming soon!')">Chat</button>
+            <button class="btn btn-action" onclick="alert('Inventory feature coming soon!')">Inventory</button>
+            <button class="btn btn-action" onclick="alert('Skills feature coming soon!')">Skills</button>
+            <button class="btn btn-action" onclick="alert('Settings feature coming soon!')">Settings</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='mazeList_compact.js') }}"></script>
+
+    <script>
+        const starsCanvas = document.getElementById('stars-canvas');
+        const starsCtx = starsCanvas.getContext('2d');
+
+        function resizeStarsCanvas() {
+            starsCanvas.width = starsCanvas.parentElement.clientWidth;
+            starsCanvas.height = starsCanvas.parentElement.clientHeight;
+        }
+        resizeStarsCanvas();
+        window.addEventListener('resize', resizeStarsCanvas);
+
+        // 🌌 星空绘制（整页背景）
+        const stars = [];
+        for (let i = 0; i < 100; i++) {
+          stars.push({
+            x: Math.random() * starsCanvas.width,
+            y: Math.random() * starsCanvas.height,
+            radius: Math.random() * 2 + 0.5,
+            opacity: Math.random() * 0.8 + 0.2
+          });
+        }
+
+        function drawStarsBackground() {
+          starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
+          stars.forEach(star => {
+            starsCtx.beginPath();
+            starsCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            starsCtx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            starsCtx.fill();
+          });
+          requestAnimationFrame(drawStarsBackground);
+        }
+        drawStarsBackground();
+
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 固定迷宫显示区域大小（正方形）
+        const canvasSize = 1200;
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+
+        // 设置 canvas 居中显示
+        canvas.style.position = "absolute";
+        canvas.style.top = "50%";
+        canvas.style.left = "50%";
+        canvas.style.transform = "translate(-50%, -50%)";
+
+        // 迷宫地图（15x15 正方形）
+        /*const maze = [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+          [1,0,1,0,1,0,1,1,1,0,1,0,1,0,1],
+          [1,0,1,0,0,0,0,0,1,0,1,0,1,0,1],
+          [1,0,1,1,1,1,1,0,1,0,1,0,1,0,1],
+          [1,0,0,0,0,0,1,0,1,0,0,0,1,0,1],
+          [1,1,1,1,1,0,1,0,1,1,1,1,1,0,1],
+          [1,0,0,0,1,0,0,0,0,0,0,0,1,0,1],
+          [1,0,1,0,1,1,1,1,1,1,1,0,1,0,1],
+          [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
+          [1,0,1,1,1,1,1,1,1,0,1,0,1,0,1],
+          [1,0,0,0,0,0,0,0,1,0,0,0,1,0,1],
+          [1,1,1,1,1,1,1,0,1,1,1,0,1,0,1],
+          [1,0,0,0,0,0,1,0,0,0,1,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        const numRows = maze.length;
+        const numCols = maze[0].length;
+        const cellSize = canvasSize / numRows;*/
+        let maze = mazeList_compact[Math.floor(Math.random() * mazeList_compact.length)];
+        const numRows = maze.length;
+        const numCols = maze[0].length;
+        const cellSize = canvasSize / numRows;
+
+
+        const player = {
+          row: 1,
+          col: 1,
+          color: '#3a10e5',
+          trail: [],
+          username: "{{ current_user.username }}"
+        };
+        const startRow = 1;
+        const startCol = 1;
+        const goalRow = 13;
+        const goalCol = 13;
+
+
+        const keys = {};
+        window.addEventListener('keydown', e => keys[e.key] = true);
+        window.addEventListener('keyup', e => keys[e.key] = false);
+        let lastMoveTime = 0;
+        const moveDelay = 150; // 毫秒，越大越慢（原来大约是 150~200ms）
+
+
+        // 🌌 星空背景
+        /*const stars = [];
+        for (let i = 0; i < 80; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 2 + 0.5,
+            opacity: Math.random() * 0.6 + 0.2
+          });
+        }
+        function drawStars() {
+          stars.forEach(star => {
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            ctx.fill();
+          });
+        }*/
+
+        function drawMaze() {
+          for (let row = 0; row < numRows; row++) {
+            for (let col = 0; col < numCols; col++) {
+              if (maze[row][col] === 1) {
+                ctx.fillStyle = '#222';
+                ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+              }
+            }
+          }// ✅ 绘制终点（绿色高亮区域）
+          ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+          ctx.fillRect(goalCol * cellSize, goalRow * cellSize, cellSize, cellSize);
+        }
+
+        function drawPlayer() {
+          const x = player.col * cellSize + cellSize / 2;
+          const y = player.row * cellSize + cellSize / 2;
+
+          player.trail.forEach((pos, i) => {
+            const alpha = i / player.trail.length * 0.3;
+            ctx.fillStyle = `rgba(58, 16, 229, ${alpha})`;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, cellSize * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          ctx.fillStyle = player.color;
+          ctx.beginPath();
+          ctx.arc(x, y, cellSize * 0.35, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#fff';
+          ctx.font = '14px Orbitron';
+          ctx.textAlign = 'center';
+          ctx.fillText(player.username, x, y - cellSize * 0.6);
+        }
+
+        function tryMovePlayer(dr, dc) {
+          const newRow = player.row + dr;
+          const newCol = player.col + dc;
+          if (
+            newRow >= 0 && newRow < numRows &&
+            newCol >= 0 && newCol < numCols &&
+            maze[newRow][newCol] === 0
+          ) {
+            player.row = newRow;
+            player.col = newCol;
+            const px = newCol * cellSize + cellSize / 2;
+            const py = newRow * cellSize + cellSize / 2;
+            player.trail.push({ x: px, y: py });
+            if (player.trail.length > 10) player.trail.shift();
+          }
+        }
+        function resetPlayerPosition() {
+          maze = mazeList_compact[Math.floor(Math.random() * mazeList_compact.length)];
+          player.row = startRow;
+          player.col = startCol;
+          player.trail = [];
+          for (let key in keys) {
+            keys[key] = false;
+          }
+          lastMoveTime = Date.now();
+        }
+
+
+        function updatePlayer() {
+          const now = Date.now();
+          if (now - lastMoveTime < moveDelay) return; // 限制移动频率
+
+          if (keys['w'] || keys['ArrowUp']) {
+            tryMovePlayer(-1, 0);
+            lastMoveTime = now;
+          } else if (keys['s'] || keys['ArrowDown']) {
+            tryMovePlayer(1, 0);
+            lastMoveTime = now;
+          } else if (keys['a'] || keys['ArrowLeft']) {
+            tryMovePlayer(0, -1);
+            lastMoveTime = now;
+          } else if (keys['d'] || keys['ArrowRight']) {
+            tryMovePlayer(0, 1);
+            lastMoveTime = now;
+          }
+          if (player.row === goalRow && player.col === goalCol) {
+            setTimeout(() => {
+              alert("🎉 恭喜你到达终点！");
+              resetPlayerPosition();
+            }, 100);
+          }
+        }
+
+
+        function updateGame() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          //drawStars();
+          drawMaze();
+          updatePlayer();
+          drawPlayer();
+          requestAnimationFrame(updateGame);
+        }
+
+        updateGame();
+
+        setTimeout(() => {
+          const message = document.querySelector('.game-message');
+          if (message) message.style.display = 'none';
+        }, 5000);
+        </script>
+
+
+
+
+</body>
+</html>
