@@ -376,6 +376,7 @@
             <button class="btn btn-action" onclick="alert('Settings feature coming soon!')">Settings</button>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='mazeList_compact.js') }}"></script>
 
     <script>
         const starsCanvas = document.getElementById('stars-canvas');
@@ -426,7 +427,7 @@
         canvas.style.transform = "translate(-50%, -50%)";
 
         // 迷宫地图（15x15 正方形）
-        const maze = [
+        /*const maze = [
           [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
           [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
           [1,0,1,0,1,0,1,1,1,0,1,0,1,0,1],
@@ -446,7 +447,12 @@
 
         const numRows = maze.length;
         const numCols = maze[0].length;
+        const cellSize = canvasSize / numRows;*/
+        let maze = mazeList_compact[Math.floor(Math.random() * mazeList_compact.length)];
+        const numRows = maze.length;
+        const numCols = maze[0].length;
         const cellSize = canvasSize / numRows;
+
 
         const player = {
           row: 1,
@@ -540,12 +546,14 @@
           }
         }
         function resetPlayerPosition() {
+          maze = mazeList_compact[Math.floor(Math.random() * mazeList_compact.length)];
           player.row = startRow;
           player.col = startCol;
           player.trail = [];
           for (let key in keys) {
             keys[key] = false;
           }
+          lastMoveTime = Date.now();
         }
 
 

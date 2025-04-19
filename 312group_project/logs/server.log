@@ -264,3 +264,97 @@
 2025-04-19 11:53:14,279 - INFO - 127.0.0.1 - - [19/Apr/2025 11:53:14] "GET /game HTTP/1.1" 200 -
 2025-04-19 11:55:52,024 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:55:52.024088"}
 2025-04-19 11:55:52,029 - INFO - 127.0.0.1 - - [19/Apr/2025 11:55:52] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:08:07,173 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 12:08:07,173 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 12:08:07,178 - INFO -  * Restarting with stat
+2025-04-19 12:08:07,721 - WARNING -  * Debugger is active!
+2025-04-19 12:08:07,732 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 12:08:10,670 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:08:10.670828"}
+2025-04-19 12:08:10,709 - INFO - 127.0.0.1 - - [19/Apr/2025 12:08:10] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:09:07,750 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 12:09:07,750 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 12:09:07,755 - INFO -  * Restarting with stat
+2025-04-19 12:09:09,368 - WARNING -  * Debugger is active!
+2025-04-19 12:09:09,378 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 12:09:15,390 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T12:09:15.390723"}
+2025-04-19 12:09:15,397 - INFO - 127.0.0.1 - - [19/Apr/2025 12:09:15] "GET / HTTP/1.1" 200 -
+2025-04-19 12:09:17,908 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/register", "timestamp": "2025-04-19T12:09:17.908621"}
+2025-04-19 12:09:17,911 - INFO - 127.0.0.1 - - [19/Apr/2025 12:09:17] "GET /register HTTP/1.1" 200 -
+2025-04-19 12:09:29,448 - INFO - {"ip": "127.0.0.1", "method": "POST", "path": "/register", "timestamp": "2025-04-19T12:09:29.448372"}
+2025-04-19 12:09:29,692 - INFO - 127.0.0.1 - - [19/Apr/2025 12:09:29] "[32mPOST /register HTTP/1.1[0m" 302 -
+2025-04-19 12:09:29,713 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T12:09:29.713926"}
+2025-04-19 12:09:29,717 - INFO - 127.0.0.1 - - [19/Apr/2025 12:09:29] "GET /login HTTP/1.1" 200 -
+2025-04-19 12:09:41,271 - INFO - {"ip": "127.0.0.1", "method": "POST", "path": "/login", "timestamp": "2025-04-19T12:09:41.271190"}
+2025-04-19 12:09:41,499 - INFO - 127.0.0.1 - - [19/Apr/2025 12:09:41] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-19 12:09:41,816 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:09:41.816814"}
+2025-04-19 12:09:41,822 - INFO - 127.0.0.1 - - [19/Apr/2025 12:09:41] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:32:06,174 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 12:32:06,174 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 12:32:06,180 - INFO -  * Restarting with stat
+2025-04-19 12:32:06,962 - WARNING -  * Debugger is active!
+2025-04-19 12:32:06,975 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 12:32:12,478 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T12:32:12.478853"}
+2025-04-19 12:32:12,494 - INFO - 127.0.0.1 - - [19/Apr/2025 12:32:12] "GET / HTTP/1.1" 200 -
+2025-04-19 12:32:15,058 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:32:15.058091"}
+2025-04-19 12:32:15,064 - INFO - 127.0.0.1 - - [19/Apr/2025 12:32:15] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:32:15,358 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:32:15.358090"}
+2025-04-19 12:32:15,446 - INFO - 127.0.0.1 - - [19/Apr/2025 12:32:15] "GET /static/mazeList_compact.js HTTP/1.1" 200 -
+2025-04-19 12:32:36,435 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:32:36.435502"}
+2025-04-19 12:32:36,438 - INFO - 127.0.0.1 - - [19/Apr/2025 12:32:36] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:32:36,459 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:32:36.459411"}
+2025-04-19 12:32:36,460 - INFO - 127.0.0.1 - - [19/Apr/2025 12:32:36] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:34:28,485 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:34:28.485255"}
+2025-04-19 12:34:28,491 - INFO - 127.0.0.1 - - [19/Apr/2025 12:34:28] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:34:28,512 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:34:28.512902"}
+2025-04-19 12:34:28,513 - INFO - 127.0.0.1 - - [19/Apr/2025 12:34:28] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:36:34,908 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 12:36:34,908 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 12:36:34,913 - INFO -  * Restarting with stat
+2025-04-19 12:36:35,739 - WARNING -  * Debugger is active!
+2025-04-19 12:36:35,752 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 12:36:38,311 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:36:38.311021"}
+2025-04-19 12:36:38,328 - INFO - 127.0.0.1 - - [19/Apr/2025 12:36:38] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:36:38,354 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:36:38.354448"}
+2025-04-19 12:36:38,452 - INFO - 127.0.0.1 - - [19/Apr/2025 12:36:38] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:36:43,604 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:36:43.604175"}
+2025-04-19 12:36:43,605 - INFO - 127.0.0.1 - - [19/Apr/2025 12:36:43] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:36:43,920 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:36:43.919990"}
+2025-04-19 12:36:43,920 - INFO - 127.0.0.1 - - [19/Apr/2025 12:36:43] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:36:55,646 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:36:55.646280"}
+2025-04-19 12:36:55,647 - INFO - 127.0.0.1 - - [19/Apr/2025 12:36:55] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:36:55,666 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:36:55.666394"}
+2025-04-19 12:36:55,667 - INFO - 127.0.0.1 - - [19/Apr/2025 12:36:55] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:56:23,742 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T12:56:23.742520"}
+2025-04-19 12:56:23,751 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:23] "GET / HTTP/1.1" 200 -
+2025-04-19 12:56:27,511 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:56:27.511482"}
+2025-04-19 12:56:27,513 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:27] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:56:27,816 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:56:27.816038"}
+2025-04-19 12:56:27,817 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:27] "GET /static/mazeList_compact.js HTTP/1.1" 200 -
+2025-04-19 12:56:30,886 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:56:30.886492"}
+2025-04-19 12:56:30,887 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:30] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:56:30,910 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:56:30.910027"}
+2025-04-19 12:56:30,910 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:30] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:56:32,584 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:56:32.584077"}
+2025-04-19 12:56:32,585 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:32] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:56:32,897 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:56:32.897472"}
+2025-04-19 12:56:32,898 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:32] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:56:34,564 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:56:34.564421"}
+2025-04-19 12:56:34,566 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:34] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:56:34,584 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:56:34.584367"}
+2025-04-19 12:56:34,585 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:34] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 12:56:36,011 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:56:36.011880"}
+2025-04-19 12:56:36,013 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:36] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:56:36,314 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T12:56:36.314587"}
+2025-04-19 12:56:36,316 - INFO - 127.0.0.1 - - [19/Apr/2025 12:56:36] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
