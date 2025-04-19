@@ -32,3 +32,53 @@
 2025-04-19 13:39:06,859 - INFO - 172.19.0.1 - - [19/Apr/2025 13:39:06] "[32mPOST /login HTTP/1.1[0m" 302 -
 2025-04-19 13:39:06,873 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T13:39:06.873268"}
 2025-04-19 13:39:06,875 - INFO - 172.19.0.1 - - [19/Apr/2025 13:39:06] "GET /game HTTP/1.1" 200 -
+2025-04-19 16:00:21,458 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.18.0.3:8080
+2025-04-19 16:00:21,458 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 16:00:21,459 - INFO -  * Restarting with stat
+2025-04-19 16:00:21,666 - WARNING -  * Debugger is active!
+2025-04-19 16:00:21,667 - INFO -  * Debugger PIN: 862-798-920
+2025-04-19 16:01:43,247 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T16:01:43.245472"}
+2025-04-19 16:01:43,289 - INFO - 172.18.0.1 - - [19/Apr/2025 16:01:43] "GET / HTTP/1.1" 200 -
+2025-04-19 16:01:52,885 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/favicon.ico", "timestamp": "2025-04-19T16:01:52.885642"}
+2025-04-19 16:01:52,889 - INFO - 172.18.0.1 - - [19/Apr/2025 16:01:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-19 16:01:57,591 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/register", "timestamp": "2025-04-19T16:01:57.590805"}
+2025-04-19 16:01:57,602 - INFO - 172.18.0.1 - - [19/Apr/2025 16:01:57] "GET /register HTTP/1.1" 200 -
+2025-04-19 16:02:07,986 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/register", "timestamp": "2025-04-19T16:02:07.986008"}
+2025-04-19 16:02:07,988 - INFO - 172.18.0.1 - - [19/Apr/2025 16:02:07] "GET /register HTTP/1.1" 200 -
+2025-04-19 16:02:33,089 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/register", "timestamp": "2025-04-19T16:02:33.089460"}
+2025-04-19 16:02:33,095 - INFO - 172.18.0.1 - - [19/Apr/2025 16:02:33] "GET /register HTTP/1.1" 200 -
+2025-04-19 16:02:47,895 - INFO - {"ip": "172.18.0.1", "method": "POST", "path": "/register", "timestamp": "2025-04-19T16:02:47.895795"}
+2025-04-19 16:02:48,407 - INFO - 172.18.0.1 - - [19/Apr/2025 16:02:48] "[32mPOST /register HTTP/1.1[0m" 302 -
+2025-04-19 16:02:48,412 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T16:02:48.412240"}
+2025-04-19 16:02:48,417 - INFO - 172.18.0.1 - - [19/Apr/2025 16:02:48] "GET /login HTTP/1.1" 200 -
+2025-04-19 16:02:55,743 - INFO - {"ip": "172.18.0.1", "method": "POST", "path": "/login", "timestamp": "2025-04-19T16:02:55.743484"}
+2025-04-19 16:02:56,162 - INFO - 172.18.0.1 - - [19/Apr/2025 16:02:56] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-19 16:02:56,169 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T16:02:56.169393"}
+2025-04-19 16:02:56,176 - INFO - 172.18.0.1 - - [19/Apr/2025 16:02:56] "GET /game HTTP/1.1" 200 -
+2025-04-19 16:04:23,676 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T16:04:23.676095"}
+2025-04-19 16:04:23,682 - INFO - 172.18.0.1 - - [19/Apr/2025 16:04:23] "GET / HTTP/1.1" 200 -
+2025-04-19 16:04:29,012 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T16:04:29.012214"}
+2025-04-19 16:04:29,019 - INFO - 172.18.0.1 - - [19/Apr/2025 16:04:29] "GET /game HTTP/1.1" 200 -
+2025-04-19 16:05:00,925 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T16:05:00.925119"}
+2025-04-19 16:05:00,935 - INFO - 172.18.0.1 - - [19/Apr/2025 16:05:00] "GET / HTTP/1.1" 200 -
+2025-04-19 16:05:02,039 - INFO - {"ip": "172.18.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T16:05:02.039488"}
+2025-04-19 16:05:02,043 - INFO - 172.18.0.1 - - [19/Apr/2025 16:05:02] "GET /game HTTP/1.1" 200 -
+2025-04-19 12:20:22,005 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.84.184.46:8080
+2025-04-19 12:20:22,007 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 12:20:22,008 - INFO -  * Restarting with stat
+2025-04-19 12:20:22,324 - WARNING -  * Debugger is active!
+2025-04-19 12:20:22,350 - INFO -  * Debugger PIN: 145-035-357
+2025-04-19 12:20:31,464 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:20:31.463522", "headers": "Host: localhost:8080; Connection: keep-alive; Sec-Ch-Ua: \"Google Chrome\";v=\"135\", \"Not-A.Brand\";v=\"8\", \"Chromium\";v=\"135\"; Sec-Ch-Ua-Mobile: ?0; Sec-Ch-Ua-Platform: \"macOS\"; Upgrade-Insecure-Requests: 1; User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36; Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7; Sec-Fetch-Site: none; Sec-Fetch-Mode: navigate; Sec-Fetch-User: ?1; Sec-Fetch-Dest: document; Accept-Encoding: gzip, deflate, br, zstd; Accept-Language: en-US,en;q=0.9; Cookie: auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=.eJwlzkFuQzEIBcC7eN2FgWeDc5kIMFYidZWvrqrcPZU6J5jfdj-vuh7tdvz7qq92f-52a10mSyAojD3ORp4BHFsjlqbKmIsTpaGxrXc5QYgJXg6rzUWWMiKXuXYG4DsYchKZyTSdVPuh8lGxMBU7huyKDRtZQrP9RX6uev1vpnXJxaYkcAmj4ZURvb0_g3g2AQ.aAPJhw.aLWNvJwbYlJ_VskqUOtH2LmNtwo", "cookies": "auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=.eJwlzkFuQzEIBcC7eN2FgWeDc5kIMFYidZWvrqrcPZU6J5jfdj-vuh7tdvz7qq92f-52a10mSyAojD3ORp4BHFsjlqbKmIsTpaGxrXc5QYgJXg6rzUWWMiKXuXYG4DsYchKZyTSdVPuh8lGxMBU7huyKDRtZQrP9RX6uev1vpnXJxaYkcAmj4ZURvb0_g3g2AQ.aAPJhw.aLWNvJwbYlJ_VskqUOtH2LmNtwo"}
+2025-04-19 12:20:31,470 - INFO - 127.0.0.1 - - [19/Apr/2025 12:20:31] "[32mGET /game HTTP/1.1[0m" 302 -
+2025-04-19 12:20:31,483 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T12:20:31.483373", "headers": "Host: localhost:8080; Connection: keep-alive; Upgrade-Insecure-Requests: 1; User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36; Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7; Sec-Fetch-Site: none; Sec-Fetch-Mode: navigate; Sec-Fetch-User: ?1; Sec-Fetch-Dest: document; Sec-Ch-Ua: \"Google Chrome\";v=\"135\", \"Not-A.Brand\";v=\"8\", \"Chromium\";v=\"135\"; Sec-Ch-Ua-Mobile: ?0; Sec-Ch-Ua-Platform: \"macOS\"; Accept-Encoding: gzip, deflate, br, zstd; Accept-Language: en-US,en;q=0.9; Cookie: auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aAPNTw.MfcILIOwv--XsWETLBLDZurzU2Y", "cookies": "auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIlBsZWFzZSBsb2cgaW4gdG8gYWNjZXNzIHRoaXMgcGFnZS4iXX1dfQ.aAPNTw.MfcILIOwv--XsWETLBLDZurzU2Y"}
+2025-04-19 12:20:31,499 - INFO - 127.0.0.1 - - [19/Apr/2025 12:20:31] "GET /login?next=%2Fgame HTTP/1.1" 200 -
+2025-04-19 12:20:41,323 - INFO - {"ip": "127.0.0.1", "method": "POST", "path": "/login", "timestamp": "2025-04-19T12:20:41.323786", "headers": "Host: localhost:8080; Connection: keep-alive; Content-Length: 34; Cache-Control: max-age=0; Sec-Ch-Ua: \"Google Chrome\";v=\"135\", \"Not-A.Brand\";v=\"8\", \"Chromium\";v=\"135\"; Sec-Ch-Ua-Mobile: ?0; Sec-Ch-Ua-Platform: \"macOS\"; Origin: http://localhost:8080; Content-Type: application/x-www-form-urlencoded; Upgrade-Insecure-Requests: 1; User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36; Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7; Sec-Fetch-Site: same-origin; Sec-Fetch-Mode: navigate; Sec-Fetch-User: ?1; Sec-Fetch-Dest: document; Referer: http://localhost:8080/login?next=%2Fgame; Accept-Encoding: gzip, deflate, br, zstd; Accept-Language: en-US,en;q=0.9; Cookie: auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=eyJfZnJlc2giOmZhbHNlfQ.aAPNTw.e4tiEASiEbzvSbxLZvsFwpeUXWU", "cookies": "auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=eyJfZnJlc2giOmZhbHNlfQ.aAPNTw.e4tiEASiEbzvSbxLZvsFwpeUXWU"}
+2025-04-19 12:20:41,838 - INFO - 127.0.0.1 - - [19/Apr/2025 12:20:41] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-19 12:20:41,844 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T12:20:41.844604", "headers": "Host: localhost:8080; Connection: keep-alive; Cache-Control: max-age=0; Upgrade-Insecure-Requests: 1; User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36; Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7; Sec-Fetch-Site: same-origin; Sec-Fetch-Mode: navigate; Sec-Fetch-User: ?1; Sec-Fetch-Dest: document; Sec-Ch-Ua: \"Google Chrome\";v=\"135\", \"Not-A.Brand\";v=\"8\", \"Chromium\";v=\"135\"; Sec-Ch-Ua-Mobile: ?0; Sec-Ch-Ua-Platform: \"macOS\"; Referer: http://localhost:8080/login?next=%2Fgame; Accept-Encoding: gzip, deflate, br, zstd; Accept-Language: en-US,en;q=0.9; Cookie: auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=.eJwlzrkNwzAMAMBdVKcQH5GSlzEkPkhaO66C7B4DGeCA-5Q9jzifZXsfVzzK_vKylRhhI1Bm9UnWKiIrmpI3JtbB7lBdlQGV04eMLmuhJXhznhI3M5FIxaaSqU3BRW_VwBCIENQWAVfKmpNde2rUxdkdqdEsd-Q64_hvpFeygV2BeNLq0GbYWrV8fxcgNQA.aAPNWQ.HiTKmipjpufU75U5_lON_aIxNj0", "cookies": "auth_token=Z4B5o4vv2FnP2eTA6FiAa9U50-Ct4iZbQHbVvj27QR0; session=.eJwlzrkNwzAMAMBdVKcQH5GSlzEkPkhaO66C7B4DGeCA-5Q9jzifZXsfVzzK_vKylRhhI1Bm9UnWKiIrmpI3JtbB7lBdlQGV04eMLmuhJXhznhI3M5FIxaaSqU3BRW_VwBCIENQWAVfKmpNde2rUxdkdqdEsd-Q64_hvpFeygV2BeNLq0GbYWrV8fxcgNQA.aAPNWQ.HiTKmipjpufU75U5_lON_aIxNj0"}
+2025-04-19 12:20:41,856 - INFO - 127.0.0.1 - - [19/Apr/2025 12:20:41] "GET /game HTTP/1.1" 200 -
