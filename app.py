@@ -28,11 +28,16 @@ logging.basicConfig(
 # Configure request logger
 @app.before_request
 def log_request_info():
+    headers = "; ".join(f"{k}: {v}" for k, v in request.headers.items ())
+    cookies = "; ".join(f"{k}={v}" for k, v in request.cookies.items ())
+
     log_data = {
         'ip': request.remote_addr,
         'method': request.method,
         'path': request.path,
-        'timestamp': datetime.now().isoformat()
+        'timestamp': datetime.now().isoformat(),
+        'headers': headers,
+        'cookies': cookies
     }
     logging.info(json.dumps(log_data))
 
