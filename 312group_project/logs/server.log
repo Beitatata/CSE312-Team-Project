@@ -1,0 +1,266 @@
+2025-04-19 13:32:24,011 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.19.0.3:8080
+2025-04-19 13:32:24,011 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 13:32:24,011 - INFO -  * Restarting with stat
+2025-04-19 13:32:24,152 - WARNING -  * Debugger is active!
+2025-04-19 13:32:24,152 - INFO -  * Debugger PIN: 634-396-085
+2025-04-19 13:32:46,228 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T13:32:46.228001"}
+2025-04-19 13:32:46,239 - INFO - 172.19.0.1 - - [19/Apr/2025 13:32:46] "[32mGET /game HTTP/1.1[0m" 302 -
+2025-04-19 13:32:46,249 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T13:32:46.249546"}
+2025-04-19 13:32:46,258 - INFO - 172.19.0.1 - - [19/Apr/2025 13:32:46] "GET /login?next=%2Fgame HTTP/1.1" 200 -
+2025-04-19 13:32:54,133 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/register", "timestamp": "2025-04-19T13:32:54.133556"}
+2025-04-19 13:32:54,141 - INFO - 172.19.0.1 - - [19/Apr/2025 13:32:54] "GET /register HTTP/1.1" 200 -
+2025-04-19 13:33:05,903 - INFO - {"ip": "172.19.0.1", "method": "POST", "path": "/register", "timestamp": "2025-04-19T13:33:05.903375"}
+2025-04-19 13:33:06,195 - INFO - 172.19.0.1 - - [19/Apr/2025 13:33:06] "[32mPOST /register HTTP/1.1[0m" 302 -
+2025-04-19 13:33:06,211 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T13:33:06.211002"}
+2025-04-19 13:33:06,216 - INFO - 172.19.0.1 - - [19/Apr/2025 13:33:06] "GET /login HTTP/1.1" 200 -
+2025-04-19 13:33:17,188 - INFO - {"ip": "172.19.0.1", "method": "POST", "path": "/login", "timestamp": "2025-04-19T13:33:17.187946"}
+2025-04-19 13:33:17,467 - INFO - 172.19.0.1 - - [19/Apr/2025 13:33:17] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-19 13:33:17,482 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T13:33:17.482294"}
+2025-04-19 13:33:17,493 - INFO - 172.19.0.1 - - [19/Apr/2025 13:33:17] "GET /game HTTP/1.1" 200 -
+2025-04-19 13:33:34,826 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T13:33:34.826570"}
+2025-04-19 13:33:34,852 - INFO - 172.19.0.1 - - [19/Apr/2025 13:33:34] "GET / HTTP/1.1" 200 -
+2025-04-19 13:33:42,620 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/logout", "timestamp": "2025-04-19T13:33:42.620587"}
+2025-04-19 13:33:42,623 - INFO - 172.19.0.1 - - [19/Apr/2025 13:33:42] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-04-19 13:33:42,635 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T13:33:42.635389"}
+2025-04-19 13:33:42,636 - INFO - 172.19.0.1 - - [19/Apr/2025 13:33:42] "GET / HTTP/1.1" 200 -
+2025-04-19 13:38:56,129 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T13:38:56.128976"}
+2025-04-19 13:38:56,131 - INFO - 172.19.0.1 - - [19/Apr/2025 13:38:56] "GET /login HTTP/1.1" 200 -
+2025-04-19 13:39:06,591 - INFO - {"ip": "172.19.0.1", "method": "POST", "path": "/login", "timestamp": "2025-04-19T13:39:06.591794"}
+2025-04-19 13:39:06,859 - INFO - 172.19.0.1 - - [19/Apr/2025 13:39:06] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-19 13:39:06,873 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T13:39:06.873268"}
+2025-04-19 13:39:06,875 - INFO - 172.19.0.1 - - [19/Apr/2025 13:39:06] "GET /game HTTP/1.1" 200 -
+2025-04-19 10:33:52,896 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 10:33:52,897 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 10:33:52,902 - INFO -  * Restarting with stat
+2025-04-19 10:33:53,476 - WARNING -  * Debugger is active!
+2025-04-19 10:33:53,488 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 10:34:01,170 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T10:34:01.170448"}
+2025-04-19 10:34:01,177 - INFO - 127.0.0.1 - - [19/Apr/2025 10:34:01] "GET / HTTP/1.1" 200 -
+2025-04-19 10:34:01,946 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/favicon.ico", "timestamp": "2025-04-19T10:34:01.946541"}
+2025-04-19 10:34:01,947 - INFO - 127.0.0.1 - - [19/Apr/2025 10:34:01] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-19 10:34:07,181 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/register", "timestamp": "2025-04-19T10:34:07.181448"}
+2025-04-19 10:34:07,185 - INFO - 127.0.0.1 - - [19/Apr/2025 10:34:07] "GET /register HTTP/1.1" 200 -
+2025-04-19 10:34:54,629 - INFO - {"ip": "127.0.0.1", "method": "POST", "path": "/register", "timestamp": "2025-04-19T10:34:54.628958"}
+2025-04-19 10:34:54,919 - INFO - 127.0.0.1 - - [19/Apr/2025 10:34:54] "[32mPOST /register HTTP/1.1[0m" 302 -
+2025-04-19 10:34:54,925 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T10:34:54.925915"}
+2025-04-19 10:34:54,930 - INFO - 127.0.0.1 - - [19/Apr/2025 10:34:54] "GET /login HTTP/1.1" 200 -
+2025-04-19 10:35:05,903 - INFO - {"ip": "127.0.0.1", "method": "POST", "path": "/login", "timestamp": "2025-04-19T10:35:05.903035"}
+2025-04-19 10:35:06,127 - INFO - 127.0.0.1 - - [19/Apr/2025 10:35:06] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-19 10:35:06,138 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T10:35:06.138478"}
+2025-04-19 10:35:06,147 - INFO - 127.0.0.1 - - [19/Apr/2025 10:35:06] "GET /game HTTP/1.1" 200 -
+2025-04-19 10:45:50,474 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T10:45:50.474272"}
+2025-04-19 10:45:50,477 - INFO - 127.0.0.1 - - [19/Apr/2025 10:45:50] "GET /game HTTP/1.1" 200 -
+2025-04-19 10:50:21,106 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 10:50:21,106 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 10:50:21,113 - INFO -  * Restarting with stat
+2025-04-19 10:50:21,680 - WARNING -  * Debugger is active!
+2025-04-19 10:50:21,693 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 10:50:27,243 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T10:50:27.243908"}
+2025-04-19 10:50:27,255 - INFO - 127.0.0.1 - - [19/Apr/2025 10:50:27] "GET /game HTTP/1.1" 200 -
+2025-04-19 10:52:45,129 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 10:52:45,129 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 10:52:45,135 - INFO -  * Restarting with stat
+2025-04-19 10:52:45,740 - WARNING -  * Debugger is active!
+2025-04-19 10:52:45,753 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 10:52:50,926 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T10:52:50.926183"}
+2025-04-19 10:52:50,943 - INFO - 127.0.0.1 - - [19/Apr/2025 10:52:50] "GET /game HTTP/1.1" 200 -
+2025-04-19 10:53:15,289 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T10:53:15.289857"}
+2025-04-19 10:53:15,295 - INFO - 127.0.0.1 - - [19/Apr/2025 10:53:15] "GET / HTTP/1.1" 200 -
+2025-04-19 10:53:17,923 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T10:53:17.923465"}
+2025-04-19 10:53:17,924 - INFO - 127.0.0.1 - - [19/Apr/2025 10:53:17] "GET /game HTTP/1.1" 200 -
+2025-04-19 10:53:41,238 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 10:53:41,238 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 10:53:41,243 - INFO -  * Restarting with stat
+2025-04-19 10:53:41,830 - WARNING -  * Debugger is active!
+2025-04-19 10:53:41,843 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 10:53:43,212 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T10:53:43.211965"}
+2025-04-19 10:53:43,226 - INFO - 127.0.0.1 - - [19/Apr/2025 10:53:43] "GET /game HTTP/1.1" 200 -
+2025-04-19 10:56:48,098 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 10:56:48,098 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 10:56:48,103 - INFO -  * Restarting with stat
+2025-04-19 10:56:48,635 - WARNING -  * Debugger is active!
+2025-04-19 10:56:48,646 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 10:56:53,714 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T10:56:53.714037"}
+2025-04-19 10:56:53,730 - INFO - 127.0.0.1 - - [19/Apr/2025 10:56:53] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:04:10,509 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:04:10,509 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:04:10,515 - INFO -  * Restarting with stat
+2025-04-19 11:04:11,088 - WARNING -  * Debugger is active!
+2025-04-19 11:04:11,101 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:04:14,318 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:04:14.318563"}
+2025-04-19 11:04:14,336 - INFO - 127.0.0.1 - - [19/Apr/2025 11:04:14] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:06:26,923 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:06:26,923 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:06:26,927 - INFO -  * Restarting with stat
+2025-04-19 11:06:27,532 - WARNING -  * Debugger is active!
+2025-04-19 11:06:27,544 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:06:31,855 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:06:31.855672"}
+2025-04-19 11:06:31,869 - INFO - 127.0.0.1 - - [19/Apr/2025 11:06:31] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:09:12,699 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:09:12,699 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:09:12,706 - INFO -  * Restarting with stat
+2025-04-19 11:09:13,290 - WARNING -  * Debugger is active!
+2025-04-19 11:09:13,303 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:09:15,717 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:09:15.717375"}
+2025-04-19 11:09:15,732 - INFO - 127.0.0.1 - - [19/Apr/2025 11:09:15] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:11:20,545 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:11:20,545 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:11:20,549 - INFO -  * Restarting with stat
+2025-04-19 11:11:21,091 - WARNING -  * Debugger is active!
+2025-04-19 11:11:21,104 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:11:25,303 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:11:25.303725"}
+2025-04-19 11:11:25,318 - INFO - 127.0.0.1 - - [19/Apr/2025 11:11:25] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:14:29,271 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:14:29,272 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:14:29,279 - INFO -  * Restarting with stat
+2025-04-19 11:14:29,904 - WARNING -  * Debugger is active!
+2025-04-19 11:14:29,916 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:14:33,422 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:14:33.422060"}
+2025-04-19 11:14:33,445 - INFO - 127.0.0.1 - - [19/Apr/2025 11:14:33] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:15:56,118 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:15:56,118 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:15:56,123 - INFO -  * Restarting with stat
+2025-04-19 11:15:56,668 - WARNING -  * Debugger is active!
+2025-04-19 11:15:56,679 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:16:05,337 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:16:05.337952"}
+2025-04-19 11:16:05,352 - INFO - 127.0.0.1 - - [19/Apr/2025 11:16:05] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:16:44,363 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:16:44,364 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:16:44,369 - INFO -  * Restarting with stat
+2025-04-19 11:16:44,950 - WARNING -  * Debugger is active!
+2025-04-19 11:16:44,963 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:16:47,603 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:16:47.603712"}
+2025-04-19 11:16:47,619 - INFO - 127.0.0.1 - - [19/Apr/2025 11:16:47] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:16:50,653 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:16:50.653640"}
+2025-04-19 11:16:50,655 - INFO - 127.0.0.1 - - [19/Apr/2025 11:16:50] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:16:50,839 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/favicon.ico", "timestamp": "2025-04-19T11:16:50.839918"}
+2025-04-19 11:16:50,840 - INFO - 127.0.0.1 - - [19/Apr/2025 11:16:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-19 11:18:33,617 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:18:33,617 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:18:33,622 - INFO -  * Restarting with stat
+2025-04-19 11:18:34,159 - WARNING -  * Debugger is active!
+2025-04-19 11:18:34,171 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:18:40,209 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:18:40.209145"}
+2025-04-19 11:18:40,223 - INFO - 127.0.0.1 - - [19/Apr/2025 11:18:40] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:19:13,749 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:19:13.749612"}
+2025-04-19 11:19:13,754 - INFO - 127.0.0.1 - - [19/Apr/2025 11:19:13] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:19:36,245 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:19:36,245 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:19:36,251 - INFO -  * Restarting with stat
+2025-04-19 11:19:36,848 - WARNING -  * Debugger is active!
+2025-04-19 11:19:36,862 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:19:39,696 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:19:39.696337"}
+2025-04-19 11:19:39,711 - INFO - 127.0.0.1 - - [19/Apr/2025 11:19:39] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:23:51,237 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:23:51,237 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:23:51,242 - INFO -  * Restarting with stat
+2025-04-19 11:23:51,835 - WARNING -  * Debugger is active!
+2025-04-19 11:23:51,848 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:23:55,648 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:23:55.647984"}
+2025-04-19 11:23:55,667 - INFO - 127.0.0.1 - - [19/Apr/2025 11:23:55] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:26:17,502 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:26:17,502 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:26:17,507 - INFO -  * Restarting with stat
+2025-04-19 11:26:18,090 - WARNING -  * Debugger is active!
+2025-04-19 11:26:18,104 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:26:20,914 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:26:20.914507"}
+2025-04-19 11:26:20,931 - INFO - 127.0.0.1 - - [19/Apr/2025 11:26:20] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:28:15,754 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:28:15.754115"}
+2025-04-19 11:28:15,760 - INFO - 127.0.0.1 - - [19/Apr/2025 11:28:15] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:32:08,835 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:32:08.835402"}
+2025-04-19 11:32:08,841 - INFO - 127.0.0.1 - - [19/Apr/2025 11:32:08] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:34:55,665 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:34:55,666 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:34:55,672 - INFO -  * Restarting with stat
+2025-04-19 11:34:56,284 - WARNING -  * Debugger is active!
+2025-04-19 11:34:56,296 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:35:02,315 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:35:02.315097"}
+2025-04-19 11:35:02,331 - INFO - 127.0.0.1 - - [19/Apr/2025 11:35:02] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:35:26,231 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:35:26.230986"}
+2025-04-19 11:35:26,232 - INFO - 127.0.0.1 - - [19/Apr/2025 11:35:26] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:37:22,941 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:37:22.941228"}
+2025-04-19 11:37:22,946 - INFO - 127.0.0.1 - - [19/Apr/2025 11:37:22] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:48:19,098 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:48:19,098 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:48:19,103 - INFO -  * Restarting with stat
+2025-04-19 11:48:19,809 - WARNING -  * Debugger is active!
+2025-04-19 11:48:19,822 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:48:22,485 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:48:22.485680"}
+2025-04-19 11:48:22,503 - INFO - 127.0.0.1 - - [19/Apr/2025 11:48:22] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:48:22,530 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/static/mazes.js", "timestamp": "2025-04-19T11:48:22.530112"}
+2025-04-19 11:48:22,531 - INFO - 127.0.0.1 - - [19/Apr/2025 11:48:22] "[33mGET /static/mazes.js HTTP/1.1[0m" 404 -
+2025-04-19 11:49:09,201 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:49:09.201508"}
+2025-04-19 11:49:09,207 - INFO - 127.0.0.1 - - [19/Apr/2025 11:49:09] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:53:05,117 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://10.3.154.9:8080
+2025-04-19 11:53:05,117 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 11:53:05,121 - INFO -  * Restarting with stat
+2025-04-19 11:53:05,697 - WARNING -  * Debugger is active!
+2025-04-19 11:53:05,709 - INFO -  * Debugger PIN: 137-372-510
+2025-04-19 11:53:09,814 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:53:09.814057"}
+2025-04-19 11:53:09,829 - INFO - 127.0.0.1 - - [19/Apr/2025 11:53:09] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:53:11,587 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:53:11.587480"}
+2025-04-19 11:53:11,589 - INFO - 127.0.0.1 - - [19/Apr/2025 11:53:11] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:53:14,278 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:53:14.278120"}
+2025-04-19 11:53:14,279 - INFO - 127.0.0.1 - - [19/Apr/2025 11:53:14] "GET /game HTTP/1.1" 200 -
+2025-04-19 11:55:52,024 - INFO - {"ip": "127.0.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T11:55:52.024088"}
+2025-04-19 11:55:52,029 - INFO - 127.0.0.1 - - [19/Apr/2025 11:55:52] "GET /game HTTP/1.1" 200 -

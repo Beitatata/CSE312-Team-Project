@@ -1,154 +1,146 @@
-from flask import Flask, request, render_template, redirect, make_response, jsonify
-from pymongo import MongoClient
-import bcrypt
-import secrets
-import hashlib
 import os
 import logging
 from datetime import datetime
-from auth import extract_credentials, validate_password
-import flask.cli
-from flask_socketio import SocketIO
-from datetime import timezone
-# ignore flask words
-flask.cli.show_server_banner = lambda *args, **kwargs: None
-# check it is in docker or not
-in_docker = os.environ.get('IN_DOCKER') == '1'
-if in_docker:
-    logging.info("Flask app started, logging is working!")
-else:
-    logging.basicConfig(level=logging.ERROR)
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_pymongo import PyMongo
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+import bcrypt
+import json
+from bson.objectid import ObjectId
 
-    logging.getLogger('werkzeug').setLevel(logging.ERROR)
-
+# Initialize Flask app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "default-secret-key")
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:8080", allow_credentials=True)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "default_secret_key")
+app.config["MONGO_URI"] = os.environ.get("MONGODB_URI", "mongodb://localhost:27017/mmo_game")
 
+# Configure logging
+logs_dir = 'logs'
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
 
-# Logging setup
 logging.basicConfig(
-    filename="/logs/access.log",
+    filename=os.path.join(logs_dir, 'server.log'),
     level=logging.INFO,
-    format="%(asctime)s %(message)s"
+    format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-# log
+# Configure request logger
 @app.before_request
-def log_request():
-    ip = request.remote_addr
-    method = request.method
-    path = request.path
-    timestamp = datetime.now(timezone.utc).isoformat()
-    logging.info(f"{timestamp} {ip} {method} {path}")
+def log_request_info():
+    log_data = {
+        'ip': request.remote_addr,
+        'method': request.method,
+        'path': request.path,
+        'timestamp': datetime.now().isoformat()
+    }
+    logging.info(json.dumps(log_data))
 
+# Initialize MongoDB
+mongo = PyMongo(app)
 
-# MongoDB client
-mongo_url = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
-client = MongoClient(mongo_url)
-db = client["myapp"]
-users = db["users"]
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
+# User model
+class User(UserMixin):
+    def __init__(self, user_data):
+        self.id = str(user_data['_id'])
+        self.username = user_data['username']
+        self.password_hash = user_data['password']
+        
+    def is_authenticated():
+        return True
+        
+    def is_active():
+        return True
+        
+    def is_anonymous():
+        return False
+        
+    def get_id(self):
+        return self.id
 
-def hash_token(token):
-    return hashlib.sha256(token.encode()).hexdigest()
+# User loader for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    if user_data:
+        return User(user_data)
+    return None
 
-
-def get_authenticated_user():
-    token = request.cookies.get("auth_token")
-    if not token:
-        return None
-    token_hash = hash_token(token)
-    return users.find_one({"token_hash": token_hash})
-
-
-@app.route("/")
+# Route for the home page
+@app.route('/')
 def index():
-    user = get_authenticated_user()
-    if user:
-        return render_template("index.html", username=user["username"])
-    return render_template("index.html", username=None)
+    return render_template('index.html')
 
-
-@app.route("/register", methods=["GET", "POST"])
+# Route for user registration
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == "GET":
-        return render_template("register.html")
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Check if username already exists
+        if mongo.db.users.find_one({'username': username}):
+            flash('Username already exists.')
+            return redirect(url_for('register'))
+        
+        # Generate salt and hash the password
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
+        
+        # Create user in database
+        user_id = mongo.db.users.insert_one({
+            'username': username,
+            'password': password_hash,
+            'created_at': datetime.now()
+        }).inserted_id
+        
+        flash('Registration successful! Please log in.')
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
 
-    username, password = extract_credentials(request)
-    password2 = request.form.get("password2")
-
-    if not username or not password or not password2:
-        return jsonify({"error": "Missing fields"}), 400
-
-    if password != password2:
-        return jsonify({"error": "Passwords do not match"}), 400
-
-    if not validate_password(password):
-        return jsonify({"error": "Password does not meet security requirements"}), 400
-
-    if users.find_one({"username": username}):
-        return jsonify({"error": "User already exists"}), 409
-
-    hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
-    users.insert_one({
-        "username": username,
-        "password": hashed_pw,
-        "token_hash": None
-    })
-
-    return redirect("/login")
-
-
-@app.route("/login", methods=["GET", "POST"])
+# Route for user login
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == "GET":
-        return render_template("login.html")
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Find user in database
+        user_data = mongo.db.users.find_one({'username': username})
+        
+        if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
+            user = User(user_data)
 
-    username, password = extract_credentials(request)
+            login_result = login_user(user)
+            # print(f"Login result: {login_result}") 
 
-    user = users.find_one({"username": username})
-    if not user:
-        return jsonify({"error": "User not found"}), 400
+            next_page = request.args.get('next')
+            if next_page:
+                return redirect(next_page)
+            return redirect(url_for('game'))
+        
+        flash('Invalid username or password.')
+    
+    return render_template('login.html')
 
-    if not bcrypt.checkpw(password.encode(), user["password"].encode()):
-        return jsonify({"error": "Incorrect password"}), 400
-
-    token = secrets.token_urlsafe(32)
-    token_hash = hash_token(token)
-
-    users.update_one({"username": username}, {"$set": {"token_hash": token_hash}})
-
-    response = make_response(redirect("/"))
-    response.set_cookie(
-        "auth_token",
-        token,
-        httponly=True,
-        max_age=60 * 60 * 24 * 7,
-        path="/"
-    )
-    return response
-
-
-@app.route("/logout")
+# Route for user logout
+@app.route('/logout')
+@login_required
 def logout():
-    response = make_response(redirect("/"))
-    response.set_cookie("auth_token", "", max_age=0)
-    return response
+    logout_user()
+    return redirect(url_for('index'))
 
-
-@app.route("/game")
+# Route for the game (protected)
+@app.route('/game')
+@login_required
 def game():
-    user = get_authenticated_user()
-    if not user:
-        return redirect("/login")
-    return render_template("game.html", username=user["username"])
+    return render_template('game.html')
 
-
-if __name__ == "__main__":
-    import game_socket  # 👈 只是导入，不再从它那 import socketio
-    socketio.run(app, host="127.0.0.1", port=8080, debug=True)
-
-
-
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, debug=True)
