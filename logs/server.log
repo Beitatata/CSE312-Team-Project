@@ -32,3 +32,55 @@
 2025-04-19 13:39:06,859 - INFO - 172.19.0.1 - - [19/Apr/2025 13:39:06] "[32mPOST /login HTTP/1.1[0m" 302 -
 2025-04-19 13:39:06,873 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T13:39:06.873268"}
 2025-04-19 13:39:06,875 - INFO - 172.19.0.1 - - [19/Apr/2025 13:39:06] "GET /game HTTP/1.1" 200 -
+2025-04-19 21:32:42,216 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.19.0.3:8080
+2025-04-19 21:32:42,217 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-19 21:32:42,217 - INFO -  * Restarting with stat
+2025-04-19 21:32:42,342 - WARNING -  * Debugger is active!
+2025-04-19 21:32:42,342 - INFO -  * Debugger PIN: 634-396-085
+2025-04-19 21:33:10,363 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T21:33:10.363530"}
+2025-04-19 21:33:10,397 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:10] "GET / HTTP/1.1" 200 -
+2025-04-19 21:33:12,517 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T21:33:12.517839"}
+2025-04-19 21:33:12,527 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:12] "GET /game HTTP/1.1" 200 -
+2025-04-19 21:33:12,538 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T21:33:12.537984"}
+2025-04-19 21:33:12,555 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:12] "GET /static/mazeList_compact.js HTTP/1.1" 200 -
+2025-04-19 21:33:30,142 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T21:33:30.142785"}
+2025-04-19 21:33:30,148 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:30] "GET /game HTTP/1.1" 200 -
+2025-04-19 21:33:30,163 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T21:33:30.163754"}
+2025-04-19 21:33:30,165 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:30] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 21:33:33,169 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T21:33:33.169413"}
+2025-04-19 21:33:33,173 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:33] "GET /game HTTP/1.1" 200 -
+2025-04-19 21:33:33,186 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T21:33:33.186825"}
+2025-04-19 21:33:33,188 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:33] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 21:33:34,079 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T21:33:34.079199"}
+2025-04-19 21:33:34,082 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:34] "GET /game HTTP/1.1" 200 -
+2025-04-19 21:33:34,096 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T21:33:34.096310"}
+2025-04-19 21:33:34,097 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:34] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 21:33:38,344 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T21:33:38.344306"}
+2025-04-19 21:33:38,347 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:38] "GET / HTTP/1.1" 200 -
+2025-04-19 21:33:39,712 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T21:33:39.712029"}
+2025-04-19 21:33:39,716 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:39] "GET /game HTTP/1.1" 200 -
+2025-04-19 21:33:39,720 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T21:33:39.720301"}
+2025-04-19 21:33:39,721 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:39] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 21:33:39,728 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T21:33:39.728485"}
+2025-04-19 21:33:39,729 - INFO - 172.19.0.1 - - [19/Apr/2025 21:33:39] "[36mGET /static/mazeList_compact.js HTTP/1.1[0m" 304 -
+2025-04-19 21:34:11,538 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/", "timestamp": "2025-04-19T21:34:11.538705"}
+2025-04-19 21:34:11,541 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:11] "GET / HTTP/1.1" 200 -
+2025-04-19 21:34:11,606 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/favicon.ico", "timestamp": "2025-04-19T21:34:11.606660"}
+2025-04-19 21:34:11,609 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-04-19 21:34:13,908 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T21:34:13.908614"}
+2025-04-19 21:34:13,920 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:13] "GET /login HTTP/1.1" 200 -
+2025-04-19 21:34:16,720 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/register", "timestamp": "2025-04-19T21:34:16.720628"}
+2025-04-19 21:34:16,730 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:16] "GET /register HTTP/1.1" 200 -
+2025-04-19 21:34:24,011 - INFO - {"ip": "172.19.0.1", "method": "POST", "path": "/register", "timestamp": "2025-04-19T21:34:24.010989"}
+2025-04-19 21:34:24,293 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:24] "[32mPOST /register HTTP/1.1[0m" 302 -
+2025-04-19 21:34:24,298 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/login", "timestamp": "2025-04-19T21:34:24.298024"}
+2025-04-19 21:34:24,299 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:24] "GET /login HTTP/1.1" 200 -
+2025-04-19 21:34:32,896 - INFO - {"ip": "172.19.0.1", "method": "POST", "path": "/login", "timestamp": "2025-04-19T21:34:32.896488"}
+2025-04-19 21:34:33,173 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:33] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-04-19 21:34:33,179 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/game", "timestamp": "2025-04-19T21:34:33.179926"}
+2025-04-19 21:34:33,181 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:33] "GET /game HTTP/1.1" 200 -
+2025-04-19 21:34:33,201 - INFO - {"ip": "172.19.0.1", "method": "GET", "path": "/static/mazeList_compact.js", "timestamp": "2025-04-19T21:34:33.201875"}
+2025-04-19 21:34:33,203 - INFO - 172.19.0.1 - - [19/Apr/2025 21:34:33] "GET /static/mazeList_compact.js HTTP/1.1" 200 -
