@@ -118,7 +118,7 @@ def login():
             user = User(user_data)
 
             login_result = login_user(user)
-            print(f"Login result: {login_result}") 
+            # print(f"Login result: {login_result}") 
 
             next_page = request.args.get('next')
             if next_page:
