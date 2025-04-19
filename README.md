@@ -1,20 +1,72 @@
-# CSE312-Team-Project
-🕹 Multiplayer Maze Race – Project Summary
-Overview:
-Our game is a real-time multiplayer maze race where all players compete to reach the goal located at the bottom-right corner of a fixed-size maze. Each player starts at the top-left corner and can move in four directions (up, down, left, right) without passing through walls. The first player to reach the goal wins, and the game ends immediately upon a winner being determined.
-🎮 Game Features
-Fixed Maze Layout: The game map is a predefined 2D grid consisting of walls and open paths. The maze layout is identical for all players.
-Simultaneous Multiplayer: All connected users participate in the same race in real time. Each player's position is updated and broadcast via WebSockets.
-Movement Logic: Players can move one tile at a time using arrow keys or WASD, and movement is validated on the server to prevent wall collision.
-Player Visibility: All players can see each other's positions and usernames in the maze.
-Winner Announcement: Once a player reaches the goal tile, the server broadcasts a game-over event and identifies the winner.
-🧰 Technical Implementation
-Framework: Flask with Flask-SocketIO (Python)
-Authentication: User registration/login system with hashed passwords and session-based authentication
-WebSockets: Real-time updates for player movements using Socket.IO
-Database: MongoDB container (for user accounts, stats, and optional achievements)
-Dockerized: Runs via docker-compose on port 8080, with separate containers for app and DB
-Logging: All HTTP requests, WebSocket events, login attempts, and errors are logged to a local file outside the container via a mounted volume
-Deployment: Will be deployed on AWS with HTTPS and WSS enabled using Certbot and a custom domain
-🏁 Win Condition
-The game ends as soon as a player reaches the goal position in the maze. The winner is the first player to arrive, based on the server’s event order (i.e., the first move processed at the goal coordinates).
+# MMO Game Project
+
+A real-time multiplayer online game built with Flask/Python for the team project.
+
+## Setup Instructions
+
+### Prerequisites
+- Docker and Docker Compose installed on your machine
+
+### Running the Application
+1. Clone the repository
+   ```
+   git clone <your-repo-url>
+   cd <project-directory>
+   ```
+
+2. Start the application using Docker Compose
+   ```
+   docker compose up
+   ```
+
+3. Access the application in your browser
+   ```
+   http://localhost:8080
+   ```
+
+## Project Features
+
+### Docker Compose
+- Application runs on port 8080
+- MongoDB database runs in a separate container
+
+### Authentication
+- User registration with salted and hashed passwords
+- User login with secure session management
+- HttpOnly cookies for authentication tokens
+- Visual indicator for logged-in users
+
+### Logging
+- Server requests logged to a file outside the Docker container
+- Logs include IP address, HTTP method, path, and timestamp
+
+## Project Structure
+```
+├── docker-compose.yml    # Docker Compose configuration
+├── Dockerfile            # Docker configuration for the app
+├── app.py                # Main Flask application
+├── requirements.txt      # Python dependencies
+├── templates/            # HTML templates
+│   ├── index.html        # Home page
+│   ├── login.html        # Login page
+│   ├── register.html     # Registration page
+│   └── game.html         # Game page (authenticated)
+├── logs/                 # Server logs directory
+└── README.md             # Project documentation
+```
+
+## Testing
+
+Once the application is running:
+
+1. Register a new account at http://localhost:8080/register
+2. Login with your credentials at http://localhost:8080/login
+3. After logging in, you'll see your username displayed on the home page
+4. Click "Enter Game" to access the game page
+5. You can move your character with the WASD keys
+6. Check the logs directory for server request logs
+
+## Security Features
+- Passwords are salted and hashed using bcrypt
+- Authentication tokens are stored as hashes in the database
+- Cookies are set with HttpOnly flag
