@@ -232,6 +232,57 @@
     </div>
 </div>
 
+    <script>
+        async function fetchRooms() {
+            try {
+                const response = await axios.get('/get_rooms');
+                const rooms = response.data;
+
+                const roomsContainer = document.getElementById('rooms-container');
+                roomsContainer.innerHTML = ''; // 清空内容
+
+                rooms.forEach(room => {
+                    const roomElement = document.createElement('div');
+                    roomElement.classList.add('room');
+
+                    roomElement.innerHTML = `
+                        <h2>${room.name}</h2>
+                        <p>当前玩家数: ${room.players.length}</p>
+                        <button onclick="joinRoom('${room.id}')">加入房间</button>
+                    `;
+
+                    roomsContainer.appendChild(roomElement);
+                });
+            } catch (error) {
+                console.error('获取房间列表失败:', error);
+            }
+        }
+
+        async function joinRoom(roomId) {
+            const playerName = prompt("请输入您的玩家名称:");
+            if (!playerName) {
+                alert("玩家名称不能为空！");
+                return;
+            }
+
+            try {
+                const response = await axios.post('/join_room', {
+                    room_id: roomId,
+                    player_name: playerName
+                });
+
+                alert(response.data.message);
+                fetchRooms(); // 刷新房间列表
+            } catch (error) {
+                alert("加入房间失败：" + error.response.data.error);
+            }
+        }
+
+        // 页面加载时获取房间列表
+        fetchRooms();
+    </script>
+
+
 <script>
   const socket = io(); // 自动连接到服务器
 
@@ -292,7 +343,7 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: roomName }),
+          body: JSON.stringify({ name: roomName, username: {{ current_user.username }} }),
         });
 
         if (!response.ok) {
@@ -306,5 +357,6 @@
         console.error(error);
       }
   }
+
   </script>
 </body>
