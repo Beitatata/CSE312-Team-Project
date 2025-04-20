@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMO Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3a10e5;
+            --secondary-color: #ff5722;
+            --dark-color: #1e1e2f;
+            --light-color: #f5f5f5;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--dark-color), #2d2d44);
+            color: var(--light-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            color: var(--light-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(58, 16, 229, 0.7);
+        }
+
+        h2{
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            margin-bottom: 30px;
+            color: var(--light-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(58, 16, 229, 0.7);
+        }
+
+        label{
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--light-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(58, 16, 229, 0.7);
+        }
+
+        .welcome {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(rgba(58, 16, 229, 0.1), transparent 70%);
+            z-index: -1;
+        }
+
+        .welcome h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: transparent;
+            color: var(--light-color);
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid;
+            z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            color: var(--light-color);
+            background: var(--primary-color);
+            box-shadow: 0 0 20px rgba(58, 16, 229, 0.7);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            color: var(--light-color);
+            background: var(--secondary-color);
+            box-shadow: 0 0 20px rgba(255, 87, 34, 0.7);
+            transform: translateY(-3px);
+        }
+
+        .btn-success {
+            border-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            color: var(--light-color);
+            background: var(--success-color);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.7);
+            transform: translateY(-3px);
+        }
+
+        .btn-danger {
+            border-color: var(--error-color);
+        }
+
+        .btn-danger:hover {
+            color: var(--light-color);
+            background: var(--error-color);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
+            transform: translateY(-3px);
+        }
+
+        .flash-messages {
+            color: var(--error-color);
+            background: rgba(231, 76, 60, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(58, 16, 229, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(58, 16, 229, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(58, 16, 229, 0);
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+<div class="flex flex-col gap-6 w-full max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold">Game Lobby</h1>
+    <div class="flex flex-col gap-2">
+      <label for="roomName" class="text-sm font-medium">Room Name:</label>
+      <input
+        type="text"
+        class="w-full p-2 text-white bg-gray-800 rounded-lg border-2 border-transparent bg-clip-padding focus:outline-none focus:ring-2 focus:ring-purple-500"
+        id="roomName"
+        placeholder="Enter meeting name..."
+      />
+    </div>
+
+    <button
+      id="createRoomBtn"
+      class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:shadow-blue-400 hover:scale-105 transition transform duration-300 animate-pulse"
+      onclick="createRoom()"
+    >
+      Create Room
+    </button>
+
+    <div class="mt-6">
+      <h2 class="text-xl font-bold mb-4">Active Rooms</h2>
+      <div id="callsList" class="flex flex-col gap-2"></div>
+    </div>
+</div>
+
+<script>
+  const socket = io(); // 自动连接到服务器
+
+    socket.on("connect", () => {
+      console.log("✅ Connected to Socket.IO server");
+      socket.emit("get_rooms"); // 请求当前房间列表
+    });
+
+    socket.on("call_list", (data) => {
+      updateCallsList(data.calls);
+    });
+
+    socket.on("error", (data) => {
+      console.error("❌ SocketIO error:", data);
+      alert(data);
+    });
+
+  function updateCallsList(calls) {
+      const callsList = document.getElementById("callsList");
+      callsList.innerHTML = "";
+
+      if (calls.length === 0) {
+        callsList.innerHTML = '<div class="text-gray-400">No active rooms available.</div>';
+        return;
+      }
+
+      calls.forEach((call) => {
+        const callDiv = document.createElement("div");
+        callDiv.className = "flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow";
+
+        const nameDiv = document.createElement("div");
+        nameDiv.textContent = call.name;
+        nameDiv.className = "text-lg";
+        callDiv.appendChild(nameDiv);
+
+        const joinButton = document.createElement("button");
+        joinButton.className = "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors";
+        joinButton.textContent = "Join";
+        joinButton.onclick = () => {
+          window.location.href = `/game/${call.id}`;
+        };
+        callDiv.appendChild(joinButton);
+
+        callsList.appendChild(callDiv);
+      });
+    }
+
+  async function createRoom() {
+      const roomName = document.getElementById("roomName").value.trim();
+      if (!roomName) {
+        alert("Please enter a room name");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/game-rooms", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: roomName }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create room");
+        }
+
+        const data = await response.json();
+        window.location.href = `/game/${data.id}`;
+      } catch (error) {
+        alert("Error creating room");
+        console.error(error);
+      }
+  }
+  </script>
+</body>
