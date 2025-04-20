@@ -15,6 +15,9 @@ services:
       - FLASK_APP=app.py
     volumes:
       - ./logs:/app/logs
+      - ./templates:/app/templates
+      - ./static:/app/static
+
 
   mongo:
     image: mongo:latest

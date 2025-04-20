@@ -31,6 +31,8 @@ def log_request_info():
 
     headers = "; ".join(f"{k}: {v}" for k, v in request.headers.items())
     cookies = "; ".join(f"{k}={v}" for k, v in request.cookies.items())
+    headers = "; ".join(f"{k}: {v}" for k, v in request.headers.items ())
+    cookies = "; ".join(f"{k}={v}" for k, v in request.cookies.items ())
 
     log_data = {
         'ip': request.remote_addr,
