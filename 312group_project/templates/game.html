@@ -377,10 +377,99 @@
         </div>
     </div>
     <script src="{{ url_for('static', filename='mazeList_compact.js') }}"></script>
-
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script>
+        const socket = io();
         const starsCanvas = document.getElementById('stars-canvas');
         const starsCtx = starsCanvas.getContext('2d');
+
+        // 当前玩家信息
+        const username = {{ current_user.username }};
+        const roomId = "{{ room_id }}";
+        const currentPlayer = { x: 400, y: 300, color: 'blue' };
+
+        // 存储所有玩家的状态
+        const players = {};
+
+        // 连接到房间
+        socket.emit('join_room', { room_id: roomId, username });
+
+        // 初始化房间中所有玩家
+        socket.on('update_all_players', (data) => {
+            Object.assign(players, data.players);
+            render()
+        });
+
+        // 监听新玩家加入
+        socket.on('player_joined', (data) => {
+            players[data.username] = data.position; // 添加新玩家
+            render();
+        });
+
+        // 监听玩家离开
+        socket.on('player_left', (data) => {
+            delete players[data.username]; // 移除离开的玩家
+            render();
+        });
+
+        // 监听其他玩家的移动
+        socket.on('update_player_position', (data) => {
+            if (players[data.username]) {
+                players[data.username] = data.position; // 更新位置
+            }
+            render();
+        });
+
+        // 玩家移动通过键盘事件
+        document.addEventListener('keydown', (event) => {
+            const step = 10; // 每次移动的步长
+            switch (event.key) {
+                case 'ArrowUp':
+                    currentPlayer.y -= step;
+                    break;
+                case 'ArrowDown':
+                    currentPlayer.y += step;
+                    break;
+                case 'ArrowLeft':
+                    currentPlayer.x -= step;
+                    break;
+                case 'ArrowRight':
+                    currentPlayer.x += step;
+                    break;
+            }
+
+            // 更新自己本地位置，并将信息发送给服务端
+            players[username] = { x: currentPlayer.x, y: currentPlayer.y };
+            socket.emit('player_move', { room_id: roomId, username, position: players[username] });
+            render();
+        });
+
+        // 渲染所有玩家
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // 清空画布
+
+            // 绘制所有玩家
+            Object.keys(players).forEach((player) => {
+                const pos = players[player];
+                ctx.fillStyle = player === username ? 'blue' : 'red'; // 当前玩家为蓝色，其他玩家为红色
+                ctx.beginPath();
+                updatePlayer()
+                ctx.arc(pos.x, pos.y, 10, 0, Math.PI * 2); // 画圆表示玩家
+                ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.fillText(player, pos.x - 10, pos.y - 15); // 显示玩家名称
+            });
+        }
+
+        // 离开房间时通知服务端
+        window.addEventListener('beforeunload', () => {
+            socket.emit('leave_room', { room_id: roomId, username });
+        });
+
+
+
+
+
 
         function resizeStarsCanvas() {
             starsCanvas.width = starsCanvas.parentElement.clientWidth;

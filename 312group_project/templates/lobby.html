@@ -209,14 +209,20 @@
 <div class="flex flex-col gap-6 w-full max-w-4xl mx-auto">
     <h1 class="text-2xl font-bold">Game Lobby</h1>
     <div class="flex flex-col gap-2">
-      <label for="roomName" class="text-sm font-medium">Room Name:</label>
-      <input
-        type="text"
-        class="w-full p-2 text-white bg-gray-800 rounded-lg border-2 border-transparent bg-clip-padding focus:outline-none focus:ring-2 focus:ring-purple-500"
-        id="roomName"
-        placeholder="Enter meeting name..."
-      />
-    </div>
+  <label for="roomName" class="text-sm font-semibold text-cyan-300 tracking-wide drop-shadow-[0_0_4px_#0ff]">
+    Room Name:
+  </label>
+  <input
+    type="text"
+    id="roomName"
+    placeholder="Enter Room Name..."
+    class="w-full p-3 text-cyan-100 bg-black/60 rounded-xl border border-cyan-500/20 shadow-[0_0_10px_#00ffff33]
+         placeholder:text-cyan-400 placeholder:italic
+         focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-500
+         transition-all duration-300 ease-in-out backdrop-blur-md
+         animate-pulse"
+  />
+</div>
 
     <button
       id="createRoomBtn"
@@ -228,59 +234,9 @@
 
     <div class="mt-6">
       <h2 class="text-xl font-bold mb-4">Active Rooms</h2>
-      <div id="callsList" class="flex flex-col gap-2"></div>
+      <div id="roomsList" class="flex flex-col gap-2"></div>
     </div>
 </div>
-
-    <script>
-        async function fetchRooms() {
-            try {
-                const response = await axios.get('/get_rooms');
-                const rooms = response.data;
-
-                const roomsContainer = document.getElementById('rooms-container');
-                roomsContainer.innerHTML = ''; // 清空内容
-
-                rooms.forEach(room => {
-                    const roomElement = document.createElement('div');
-                    roomElement.classList.add('room');
-
-                    roomElement.innerHTML = `
-                        <h2>${room.name}</h2>
-                        <p>当前玩家数: ${room.players.length}</p>
-                        <button onclick="joinRoom('${room.id}')">加入房间</button>
-                    `;
-
-                    roomsContainer.appendChild(roomElement);
-                });
-            } catch (error) {
-                console.error('获取房间列表失败:', error);
-            }
-        }
-
-        async function joinRoom(roomId) {
-            const playerName = prompt("请输入您的玩家名称:");
-            if (!playerName) {
-                alert("玩家名称不能为空！");
-                return;
-            }
-
-            try {
-                const response = await axios.post('/join_room', {
-                    room_id: roomId,
-                    player_name: playerName
-                });
-
-                alert(response.data.message);
-                fetchRooms(); // 刷新房间列表
-            } catch (error) {
-                alert("加入房间失败：" + error.response.data.error);
-            }
-        }
-
-        // 页面加载时获取房间列表
-        fetchRooms();
-    </script>
 
 
 <script>
@@ -291,8 +247,8 @@
       socket.emit("get_rooms"); // 请求当前房间列表
     });
 
-    socket.on("call_list", (data) => {
-      updateCallsList(data.calls);
+    socket.on("roomList", (data) => {
+      updateRooms(data.room);
     });
 
     socket.on("error", (data) => {
@@ -300,35 +256,127 @@
       alert(data);
     });
 
-  function updateCallsList(calls) {
-      const callsList = document.getElementById("callsList");
-      callsList.innerHTML = "";
+  {#function updateCallsList(calls) {#}
+  {#    const callsList = document.getElementById("callsList");#}
+  {#    callsList.innerHTML = "";#}
+  {##}
+  {#    if (calls.length === 0) {#}
+  {#      callsList.innerHTML = '<div class="text-gray-400">No active rooms available.</div>';#}
+  {#      return;#}
+  {#    }#}
+  {##}
+  {#    calls.forEach((call) => {#}
+  {#      const callDiv = document.createElement("div");#}
+  {#      callDiv.className = "flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow";#}
+  {##}
+  {#      const nameDiv = document.createElement("div");#}
+  {#      nameDiv.textContent = call.name;#}
+  {#      nameDiv.className = "text-lg";#}
+  {#      callDiv.appendChild(nameDiv);#}
+  {##}
+  {#      const joinButton = document.createElement("button");#}
+  {#      joinButton.className = "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors";#}
+  {#      joinButton.textContent = "Join";#}
+  {#      joinButton.onclick = () => {#}
+  {#        window.location.href = `/game/${call.id}`;#}
+  {#      };#}
+  {#      callDiv.appendChild(joinButton);#}
+  {##}
+  {#      callsList.appendChild(callDiv);#}
+  {#    });#}
+  {#  }#}
 
-      if (calls.length === 0) {
-        callsList.innerHTML = '<div class="text-gray-400">No active rooms available.</div>';
-        return;
+  async function fetchRooms() {
+        try {
+            const response = await fetch('/api/rooms'); // 获取房间信息
+            if (!response.ok) {
+                throw new Error('网络响应失败');
+            }
+            const rooms = await response.json();
+            updateRooms(rooms); // 调用函数渲染房间
+        } catch (error) {
+            console.error('获取房间失败: ', error);
+        }
+    }
+
+    function initMiniParticles(canvas) {
+      const ctx = canvas.getContext("2d");
+      const particles = Array.from({ length: 30 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5,
+        radius: Math.random() * 1.5 + 0.5
+      }));
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.x += p.dx;
+          p.y += p.dy;
+          if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(0, 255, 255, 0.3)";
+          ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
       }
 
-      calls.forEach((call) => {
-        const callDiv = document.createElement("div");
-        callDiv.className = "flex justify-between items-center p-4 bg-gray-700 rounded-lg shadow";
-
-        const nameDiv = document.createElement("div");
-        nameDiv.textContent = call.name;
-        nameDiv.className = "text-lg";
-        callDiv.appendChild(nameDiv);
-
-        const joinButton = document.createElement("button");
-        joinButton.className = "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors";
-        joinButton.textContent = "Join";
-        joinButton.onclick = () => {
-          window.location.href = `/game/${call.id}`;
-        };
-        callDiv.appendChild(joinButton);
-
-        callsList.appendChild(callDiv);
-      });
+      draw();
     }
+
+    // 定义一个函数，用于将房间数据渲染到 HTML
+    function updateRooms(rooms) {
+        const roomList = document.getElementById('roomsList'); // 假设放列表的容器 ID 为 room-list
+        roomList.innerHTML = ''; // 清空旧的房间列表
+
+        if (rooms.length === 0) {
+            roomList.innerHTML = '<div class="text-gray-400">No active games</div>';
+            return;
+    }
+        // 遍历房间信息，生成新的 HTML 内容
+        rooms.forEach((room) => {
+            const roomElement = document.createElement('div');
+            roomElement.className =
+                "relative overflow-hidden flex justify-between items-center p-4 mb-4 bg-gradient-to-r from-black via-gray-900 to-black rounded-2xl border border-pink-500/30 shadow-[0_0_20px_#ff00ff50] hover:shadow-[0_0_40px_#ff00ffaa] transition-all duration-300 ease-in-out backdrop-blur-md";
+
+            //
+            const particleCanvas = document.createElement("canvas");
+            particleCanvas.className = "absolute inset-0 z-0 pointer-events-none";
+            particleCanvas.width = 300;
+            particleCanvas.height = 100;
+            roomElement.appendChild(particleCanvas);
+
+            // 内容容器（放标题和按钮）
+            const contentWrapper = document.createElement("div");
+            contentWrapper.className = "relative z-10 flex justify-between w-full items-center";
+            //
+              const nameDiv = document.createElement("div");
+              nameDiv.textContent = room.name;
+              nameDiv.className = "text-cyan-300 text-xl font-extrabold drop-shadow-[0_0_6px_#0ff] tracking-wide";
+              roomElement.appendChild(nameDiv);
+
+              const joinButton = document.createElement("button");
+              joinButton.className ="px-5 py-2 bg-blue-600 text-white font-semibold rounded-xl shadow-[0_0_10px_#00f0ff80] hover:bg-blue-700 hover:shadow-[0_0_20px_#00f0ff] animate-pulse transition-all duration-300 ease-in-out";
+              joinButton.textContent = "Join";
+              joinButton.onclick = () =>
+                (window.location.href = `/game/${room.id}`);
+              roomElement.appendChild(joinButton);
+
+              roomList.appendChild(roomElement);
+              initMiniParticles(particleCanvas);
+            });
+    }
+
+    // 定时每隔 5 秒更新房间信息
+    setInterval(fetchRooms, 5000);
+    // 页面加载完成时第一次获取房间
+    window.onload = fetchRooms;
+
 
   async function createRoom() {
       const roomName = document.getElementById("roomName").value.trim();

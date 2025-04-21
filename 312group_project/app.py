@@ -4,8 +4,8 @@ import uuid
 from datetime import datetime
 from pickle import FALSE
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from flask_socketio import SocketIO, emit
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from flask_socketio import SocketIO, emit, leave_room
 from flask_pymongo import PyMongo
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -18,6 +18,7 @@ from pymongo import MongoClient
 # Initialize Flask app
 app = Flask(__name__)
 socketio = SocketIO(app)
+active_rooms = {}
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "default_secret_key")
 app.config["MONGO_URI"] = os.environ.get("MONGODB_URI", "mongodb://localhost:27017/mmo_game")
 
@@ -197,10 +198,11 @@ def create_room():
             call_id = str(uuid.uuid4())
 
             # 将房间数据插入到 MongoDB 的 `room` 集合中
-            mongo.db.room.insert_one({
+            rooms_collection.insert_one({
                 "id": call_id,
                 "name": data["name"],
                 "owner": data["username"],
+                "players": [],
                 "created_at": datetime.now().isoformat()
             })
 
@@ -210,14 +212,14 @@ def create_room():
             # 处理异常并返回错误信息
             return jsonify({"error": "Bad Request", "message": str(e)}), 400
 
-@app.route("/get_rooms", methods=["GET"])
+@app.route("/api/rooms", methods=["GET"])
 def get_rooms():
     """从 MongoDB 获取所有房间数据"""
     rooms = list(rooms_collection.find({}, {"_id": 0}))  # 返回所有房间信息，不包含 `_id`
     return jsonify(rooms)
 
 
-@app.route("/join_room", methods=["POST"])
+@app.route("/api/join_room", methods=["POST"])
 def join_room():
     """处理玩家加入房间请求"""
     room_id = request.json.get("room_id")
@@ -238,6 +240,49 @@ def join_room():
     )
 
     return jsonify({"message": f"{player_name} 已加入房间 {room_id}"}), 200
+
+@socketio.on('join_room')
+def handle_join_room(data):
+    room_id = data.get('room_id')
+    username = data.get('username')
+    if not room_id or not username:
+        return
+    join_room(room_id)
+    active_rooms[room_id]['players'].append(username)
+    emit('player_joined', {'username': username}, room=room_id)
+
+
+@socketio.on('leave_room')
+def handle_leave_room(data):
+    room_id = data.get('room_id')
+    username = data.get('username')
+    if not room_id or not username:
+        return
+    leave_room(room_id)
+    if room_id in active_rooms and username in active_rooms[room_id]['players']:
+        active_rooms[room_id]['players'].remove(username)
+    emit('player_left', {'username': username}, room=room_id)
+
+
+@socketio.on('player_move')
+def handle_player_move(data):
+    room_id = data.get('room_id')
+    position = data.get('position')  # 包含玩家移动后的坐标
+    username = data.get('username')
+    emit('update_player_position', {'username': username, 'position': position}, room=room_id)
+
+
+# 删除房间的逻辑，当房间中没有玩家时可以自动清理
+@socketio.on('disconnect')
+def handle_disconnect():
+    room_id = session.get('room_id')
+    username = session.get('username')
+    if room_id in active_rooms and username in active_rooms[room_id]['players']:
+        active_rooms[room_id]['players'].remove(username)
+        if not active_rooms[room_id]['players']:  # 如果房间为空，删除房间
+            del active_rooms[room_id]
+
+
 
 
 
