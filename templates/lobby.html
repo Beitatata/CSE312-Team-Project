@@ -32,7 +32,10 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const socket = io();
+      const socket = io({
+          transports: ['websocket']
+      });
+
 
       // join lobby when connected
       socket.on('connect', () => {
