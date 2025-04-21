@@ -14,13 +14,13 @@
             --success-color: #2ecc71;
             --error-color: #e74c3c;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, var(--dark-color), #2d2d44);
@@ -31,7 +31,7 @@
             align-items: center;
             padding: 20px;
         }
-        
+
         .container {
             max-width: 800px;
             width: 100%;
@@ -43,7 +43,7 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: 2.5rem;
@@ -53,7 +53,7 @@
             letter-spacing: 2px;
             text-shadow: 0 0 15px rgba(58, 16, 229, 0.7);
         }
-        
+
         .welcome {
             background: rgba(255, 255, 255, 0.05);
             padding: 30px;
@@ -63,7 +63,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .welcome::before {
             content: '';
             position: absolute;
@@ -74,27 +74,27 @@
             background: radial-gradient(rgba(58, 16, 229, 0.1), transparent 70%);
             z-index: -1;
         }
-        
+
         .welcome h2 {
             font-family: 'Orbitron', sans-serif;
             color: var(--secondary-color);
             margin-bottom: 15px;
             font-size: 1.8rem;
         }
-        
+
         p {
             font-size: 1.1rem;
             margin-bottom: 25px;
             line-height: 1.6;
         }
-        
+
         .btn-container {
             display: flex;
             justify-content: center;
             gap: 20px;
             margin-top: 30px;
         }
-        
+
         .btn {
             display: inline-block;
             background: transparent;
@@ -112,51 +112,51 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        
+
         .btn-primary {
             border-color: var(--primary-color);
         }
-        
+
         .btn-primary:hover {
             color: var(--light-color);
             background: var(--primary-color);
             box-shadow: 0 0 20px rgba(58, 16, 229, 0.7);
             transform: translateY(-3px);
         }
-        
+
         .btn-secondary {
             border-color: var(--secondary-color);
         }
-        
+
         .btn-secondary:hover {
             color: var(--light-color);
             background: var(--secondary-color);
             box-shadow: 0 0 20px rgba(255, 87, 34, 0.7);
             transform: translateY(-3px);
         }
-        
+
         .btn-success {
             border-color: var(--success-color);
         }
-        
+
         .btn-success:hover {
             color: var(--light-color);
             background: var(--success-color);
             box-shadow: 0 0 20px rgba(46, 204, 113, 0.7);
             transform: translateY(-3px);
         }
-        
+
         .btn-danger {
             border-color: var(--error-color);
         }
-        
+
         .btn-danger:hover {
             color: var(--light-color);
             background: var(--error-color);
             box-shadow: 0 0 20px rgba(231, 76, 60, 0.7);
             transform: translateY(-3px);
         }
-        
+
         .flash-messages {
             color: var(--error-color);
             background: rgba(231, 76, 60, 0.1);
@@ -165,7 +165,7 @@
             margin-bottom: 25px;
             border: 1px solid rgba(231, 76, 60, 0.2);
         }
-        
+
         /* Animation */
         @keyframes pulse {
             0% {
@@ -178,16 +178,17 @@
                 box-shadow: 0 0 0 0 rgba(58, 16, 229, 0);
             }
         }
-        
+
         .animate-pulse {
             animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Welcome to the MMO Game</h1>
-        
+
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="flash-messages">
@@ -197,15 +198,27 @@
                 </div>
             {% endif %}
         {% endwith %}
-        
+
         {% if current_user.is_authenticated %}
             <div class="welcome">
+                {% if current_user.is_authenticated and current_user.avatar %}
+                <img src="{{ url_for('static', filename='uploads/' ~ current_user.avatar) }}"
+                         alt="User Avatar"
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px;">
+                {% endif %}
                 <h2>Hello, {{ current_user.username }}!</h2>
                 <p>You are now logged in and ready to start your adventure.</p>
                 <div class="btn-container">
                     <a href="{{ url_for('game') }}" class="btn btn-success animate-pulse">Enter Game</a>
                     <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
                 </div>
+
+                <!-- Upload avatar only when logged in -->
+                <form action="{{ url_for('upload_picture') }}" method="POST" enctype="multipart/form-data" style="margin-top: 30px;">
+                    <label for="picture">Upload Your Avatar:</label><br>
+                    <input type="file" id="picture" name="picture" accept="image/*" required style="margin-top: 10px;"><br><br>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
             </div>
         {% else %}
             <p>Begin your adventure in this massively multiplayer online world!</p>
@@ -215,5 +228,6 @@
             </div>
         {% endif %}
     </div>
+
 </body>
 </html>

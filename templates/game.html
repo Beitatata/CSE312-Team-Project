@@ -1,10 +1,14 @@
+<!-- templates/game.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game – MMO Game</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+  <title>Game – MMO Game</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap"
+    rel="stylesheet"
+  />
   <style>
     :root {
       --primary-color: #3a10e5;
@@ -15,13 +19,7 @@
       --ui-border: rgba(58, 16, 229, 0.5);
       --error-color: #e74c3c;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Roboto', sans-serif;
       background: #000;
@@ -31,15 +29,11 @@
       display: flex;
       flex-direction: column;
     }
-
-    /* Overall page container */
     .game-container {
       flex: 1;
       display: flex;
       flex-direction: column;
     }
-
-    /* Header section styling */
     .game-header {
       background: var(--ui-dark);
       border-bottom: 2px solid var(--ui-border);
@@ -50,14 +44,10 @@
       align-items: center;
       font-family: 'Orbitron', sans-serif;
     }
-
-    /* Header button group layout */
     .header-buttons {
       display: flex;
       gap: 10px;
     }
-
-    /* Button base styling */
     .btn {
       display: inline-block;
       padding: 8px 20px;
@@ -71,26 +61,10 @@
       transition: all 0.3s ease;
       color: var(--light-color);
     }
-
-    /* Home button (white border) */
-    .btn-home {
-      border-color: var(--light-color);
-    }
-    .btn-home:hover {
-      background: var(--light-color);
-      color: var(--dark-color);
-    }
-
-    /* Logout button (red border) */
-    .btn-danger {
-      border-color: var(--error-color);
-    }
-    .btn-danger:hover {
-      background: var(--error-color);
-      color: var(--light-color);
-    }
-
-    /* User information layout */
+    .btn-home { border-color: var(--light-color); }
+    .btn-home:hover { background: var(--light-color); color: var(--dark-color); }
+    .btn-danger { border-color: var(--error-color); }
+    .btn-danger:hover { background: var(--error-color); color: var(--light-color); }
     .user-info {
       display: flex;
       align-items: center;
@@ -108,42 +82,26 @@
       border: 2px solid rgba(255, 255, 255, 0.3);
     }
     .user-name { color: var(--secondary-color); font-weight: bold; }
-
-    /* Main game content area: fills remaining space */
     .game-content {
       flex: 1;
       background: var(--ui-dark);
       position: relative;
       display: flex;
-      justify-content: stretch;
-      align-items: stretch;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
     }
-
-    /* Starfield background layer */
-    #stars-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Game canvas: occupies full width and height */
+    #stars-canvas,
     #game-canvas {
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 1;
       width: 90% !important;
       height: 90% !important;
-      max-width: none;
-      aspect-ratio: auto;
+      border: 4px solid var(--secondary-color);
+      box-sizing: content-box;
     }
-
-    /* Welcome message styling and animation */
+    #game-canvas { z-index: 1; }
     .game-message {
       position: absolute;
       top: 20px;
@@ -165,8 +123,6 @@
       80%  { opacity: 1; transform: translate(-50%, 0); }
       100% { opacity: 0; transform: translate(-50%, -20px); }
     }
-
-    /* Control instructions panel */
     .key-controls {
       position: absolute;
       bottom: 20px;
@@ -185,20 +141,37 @@
       margin-bottom: 10px;
       text-align: center;
     }
-    .key-item { display: flex; align-items: center; margin-bottom: 5px; }
-    .key { display: inline-block; min-width: 30px; text-align: center;
-      background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 4px; padding: 2px 8px; margin-right: 8px; font-size: 0.8rem;
+    .key-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .key {
+      display: inline-block;
+      min-width: 30px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-right: 8px;
+      font-size: 0.8rem;
     }
     .key-action { font-size: 0.8rem; color: var(--light-color); }
   </style>
 </head>
-
 <body>
   <div class="game-container">
     <div class="game-header">
       <div class="user-info">
+        {% if current_user.avatar %}
+          <img src="{{ url_for('static', filename='uploads/' ~ current_user.avatar) }}"
+             alt="Avatar"
+             class="user-avatar"
+             style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
+      {% else %}
         <div class="user-avatar">{{ current_user.username[0].upper() }}</div>
+      {% endif %}
         <div class="user-name">{{ current_user.username }}</div>
       </div>
       <div class="header-buttons">
@@ -210,6 +183,7 @@
     <div class="game-content">
       <canvas id="stars-canvas"></canvas>
       <canvas id="game-canvas"></canvas>
+
       <div class="game-message">
         Welcome, {{ current_user.username }}! Move with WASD keys.
       </div>
@@ -223,137 +197,14 @@
       </div>
     </div>
   </div>
-
-  <script src="{{ url_for('static', filename='mazeList_compact.js') }}"></script>
   <script>
-    // Starfield background rendering
-    const starsCanvas = document.getElementById('stars-canvas');
-    const starsCtx    = starsCanvas.getContext('2d');
-    function resizeStars() {
-      starsCanvas.width  = starsCanvas.clientWidth;
-      starsCanvas.height = starsCanvas.clientHeight;
-    }
-    window.addEventListener('resize', resizeStars);
-    resizeStars();
 
-    const stars = Array.from({ length: 100 }, () => ({
-      x: Math.random() * starsCanvas.width,
-      y: Math.random() * starsCanvas.height,
-      r: Math.random() * 2 + 0.5,
-      o: Math.random() * 0.8 + 0.2
-    }));
-
-    function drawStars() {
-      starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
-      stars.forEach(s => {
-        starsCtx.beginPath();
-        starsCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        starsCtx.fillStyle = `rgba(255,255,255,${s.o})`;
-        starsCtx.fill();
-      });
-      requestAnimationFrame(drawStars);
-    }
-    drawStars();
-
-    // Main game logic
-    const canvas     = document.getElementById('game-canvas');
-    const ctx        = canvas.getContext('2d');
-    const canvasSize = 1200;
-    canvas.width     = canvasSize;
-    canvas.height    = canvasSize;
-
-    let maze       = mazeList_compact[Math.floor(Math.random() * mazeList_compact.length)];
-    const numRows  = maze.length;
-    const numCols  = maze[0].length;
-    const cellSize = canvasSize / numRows;
-
-    // Player initialization
-    const player = {
-      row: 1,
-      col: 1,
-      color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim(),
-      trail: [],
-      username: "{{ current_user.username }}"
-    };
-    const startRow = 1, startCol = 1;
-    const goalRow  = numRows - 2, goalCol = numCols - 2;
-
-    const keys = {};
-    window.addEventListener('keydown', e => keys[e.key] = true);
-    window.addEventListener('keyup',   e => keys[e.key] = false);
-    let lastMove = 0, moveDelay = 150;
-
-    // Attempt player movement
-    function tryMove(dr, dc) {
-      const r = player.row + dr, c = player.col + dc;
-      if (r >= 0 && r < numRows && c >= 0 && c < numCols && maze[r][c] === 0) {
-        player.row = r;
-        player.col = c;
-        player.trail.push({ x: c * cellSize + cellSize / 2, y: r * cellSize + cellSize / 2 });
-        if (player.trail.length > 10) player.trail.shift();
-      }
-    }
-
-    // Reset game state
-    function reset() {
-      maze = mazeList_compact[Math.floor(Math.random() * mazeList_compact.length)];
-      player.row = startRow;
-      player.col = startCol;
-      player.trail = [];
-      Object.keys(keys).forEach(k => keys[k] = false);
-      lastMove = Date.now();
-    }
-
-    // Update player based on input timing
-    function updatePlayer() {
-      const now = Date.now();
-      if (now - lastMove < moveDelay) return;
-      if (keys['w'] || keys['ArrowUp'])    { tryMove(-1, 0); lastMove = now; }
-      if (keys['s'] || keys['ArrowDown'])  { tryMove( 1, 0); lastMove = now; }
-      if (keys['a'] || keys['ArrowLeft'])  { tryMove( 0,-1); lastMove = now; }
-      if (keys['d'] || keys['ArrowRight']) { tryMove( 0, 1); lastMove = now; }
-      if (player.row === goalRow && player.col === goalCol) {
-        setTimeout(() => { alert("🎉 You win!"); reset(); }, 100);
-      }
-    }
-
-    // Draw the maze grid
-    function drawMaze() {
-      for (let r = 0; r < numRows; r++) {
-        for (let c = 0; c < numCols; c++) {
-          if (maze[r][c] === 1) {
-            ctx.fillStyle = '#222';
-            ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
-          }
-        }
-      }
-      ctx.fillStyle = 'rgba(0,255,0,0.3)';
-      ctx.fillRect(goalCol * cellSize, goalRow * cellSize, cellSize, cellSize);
-    }
-
-    // Draw the player avatar and name
-    function drawPlayer() {
-      const x = player.col * cellSize + cellSize / 2;
-      const y = player.row * cellSize + cellSize / 2;
-      ctx.fillStyle = player.color;
-      ctx.beginPath();
-      ctx.arc(x, y, cellSize * 0.35, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.font = '14px Orbitron';
-      ctx.textAlign = 'center';
-      ctx.fillText(player.username, x, y - cellSize * 0.6);
-    }
-
-    // Main game loop
-    function loop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawMaze();
-      updatePlayer();
-      drawPlayer();
-      requestAnimationFrame(loop);
-    }
-    loop();
+    window.PLAYER_IMG_URL = "{{ url_for('static', filename='uploads/' ~ current_user.avatar) }}";
+    window.PLAYER_NAME    = "{{ current_user.username }}";
   </script>
+  <!-- External JavaScript files -->
+  <script src="{{ url_for('static', filename='starfield.js') }}"></script>
+  <script src="{{ url_for('static', filename='maze.js') }}"></script>
+  <script src="{{ url_for('static', filename='game.js') }}"></script>
 </body>
 </html>
