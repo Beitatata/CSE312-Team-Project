@@ -137,7 +137,10 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 # Initialize SocketIO and track online users
-socketio = SocketIO(app)
+
+socketio = SocketIO(app,
+                   cors_allowed_origins="*",
+                   ssl_context=None)
 online_users = set()
 
 @socketio.on('join_lobby')
