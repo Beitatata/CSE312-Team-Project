@@ -1,5 +1,6 @@
 import os
 import logging
+
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_pymongo import PyMongo
@@ -15,6 +16,7 @@ import bcrypt
 import json
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -134,8 +136,40 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+# Initialize SocketIO and track online users
+socketio = SocketIO(app)
+online_users = set()
+
+@socketio.on('join_lobby')
+def handle_join_lobby():
+    if current_user.is_authenticated:
+        username = current_user.username
+        online_users.add(username)
+        join_room('lobby')
+        emit('update_user_list', list(online_users), room='lobby')
+
+@socketio.on('leave_lobby')
+def handle_leave_lobby():
+    if current_user.is_authenticated:
+        username = current_user.username
+        online_users.discard(username)
+        leave_room('lobby')
+        emit('update_user_list', list(online_users), room='lobby')
+
+@socketio.on('disconnect')
+def on_disconnect():
+    if current_user.is_authenticated:
+        username = current_user.username
+        online_users.discard(username)
+        leave_room('lobby')
+        emit('update_user_list', list(online_users), room='lobby')
 
 # Protected game route
+@app.route('/lobby')
+@login_required
+def lobby():
+    return render_template('lobby.html', username=current_user.username)
+
 @app.route('/game')
 @login_required
 def game():
