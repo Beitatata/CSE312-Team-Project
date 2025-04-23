@@ -218,8 +218,8 @@ socket.on('player_won', data => {
     }, 200);  // Delay prompt again by 200ms
   } else {
     setTimeout(() => {
-        alert(`💥 ${data.winner} Wins! You Lose!`);
+        alert('💥 ' + data.winner + ' Wins! You Lose!');
         window.location.href = '/';
-     },50);
+     },200);
   }
 });

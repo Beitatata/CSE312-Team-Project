@@ -56,7 +56,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# User model for authentication\ nclass User(UserMixin):
+# User model for authentication
+class User(UserMixin):
     def __init__(self, user_data):
         self.id = str(user_data['_id'])
         self.username = user_data['username']
@@ -73,11 +74,11 @@ def load_user(user_id):
         return User(user_data)
     return None
 
-# Initialize SocketIO and track online users
 
+# Initialize SocketIO and track online users
 socketio = SocketIO(app,
-                   cors_allowed_origins="*",
-                   ssl_context=None)
+                    cors_allowed_origins="*",
+                    ssl_context=None)
 online_users = set()
 
 @socketio.on('join_lobby')
@@ -95,6 +96,7 @@ def handle_leave_lobby():
         online_users.discard(username)
         leave_room('lobby')
         emit('update_user_list', list(online_users), room='lobby')
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -114,7 +116,10 @@ def handle_disconnect():
                 emit('update_players', list(rooms[room].keys()), room=room)
                 break
 
-# Added: After receiving 'start_game' from frontend, broadcast from server\ n@socketio.on('start_game')
+
+
+# After receiving 'start_game' from frontend, broadcast from server\ n@socketio.on('start_game')
+@socketio.on('start_game')
 def handle_start_game(data):
     # 1) Generate a unique room name for this game
     seed = random.randint(0, 2**31-1)
@@ -130,6 +135,7 @@ def handle_join_room(data):
     avatar_filename = current_user.avatar
     avatar_url = url_for('static', filename=f'uploads/{avatar_filename}') if avatar_filename else None
     sid = request.sid
+
 
     join_room(room)
 
@@ -177,12 +183,11 @@ def handle_move(data):
         'row': row,
         'col': col
     }, room=room, include_self=False)
-    goal_row = 19  # e.g., numRows - 2
-    goal_col = 19  # e.g., numCols - 2
+    goal_row = 19
+    goal_col = 19
     if row == goal_row and col == goal_col:
         print(f"[WIN] {username} has reached the goal!")
         emit('player_won', {'winner': username}, room=room)
-
 # Routes
 @app.route('/')
 def index():
@@ -292,4 +297,5 @@ def upload_picture():
     return redirect(request.referrer or '/')
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=8080, debug=False, allow_unsafe_werkzeug=True)
+
+    socketio.run(app, host='0.0.0.0', port=8080, debug=False)
