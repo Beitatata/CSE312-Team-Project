@@ -160,6 +160,30 @@
       font-size: 0.8rem;
     }
     .key-action { font-size: 0.8rem; color: var(--light-color); }
+    .flash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .flash.hidden {
+      display: none;
+    }
+    .flash span {
+      color: #fff;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+    .flash button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
   </style>
 
 </head>
@@ -198,6 +222,10 @@
       ">
         <h3 style="margin-bottom: 10px;">Players</h3>
         <ul id="player-names" style="list-style: none; padding: 0; margin: 0;"></ul>
+      </div>
+      <div id="flashBanner" class="flash hidden">
+        <span id="flashText"></span>
+        <button id="flashClose">OK</button>
       </div>
       <div class="game-message">
         Welcome, {{ current_user.username }}! Move with WASD keys.

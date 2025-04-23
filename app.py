@@ -75,11 +75,74 @@ def load_user(user_id):
     return None
 
 
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Check if the username is already taken
+        if mongo.db.users.find_one({'username': username}):
+            flash('Username already exists.')
+            return redirect(url_for('register'))
+
+        # Hash the password with bcrypt
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
+
+        # Insert new user into the database
+        mongo.db.users.insert_one({
+            'username': username,
+            'password': password_hash,
+            'created_at': datetime.now()
+        })
+
+        flash('Registration successful! Please log in.')
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        user_data = mongo.db.users.find_one({'username': username})
+        if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
+            user = User(user_data)
+            login_user(user)
+
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('index'))
+
+        flash('Invalid username or password.')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
 # Initialize SocketIO and track online users
 socketio = SocketIO(app,
                     cors_allowed_origins="*",
                     ssl_context=None)
 online_users = set()
+
+@app.route('/lobby')
+@login_required
+def lobby():
+    return render_template('lobby.html', username=current_user.username)
 
 @socketio.on('join_lobby')
 def handle_join_lobby():
@@ -189,65 +252,6 @@ def handle_move(data):
         print(f"[WIN] {username} has reached the goal!")
         emit('player_won', {'winner': username}, room=room)
 # Routes
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/lobby')
-@login_required
-def lobby():
-    return render_template('lobby.html', username=current_user.username)
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        # Check if the username is already taken
-        if mongo.db.users.find_one({'username': username}):
-            flash('Username already exists.')
-            return redirect(url_for('register'))
-
-        # Hash the password with bcrypt
-        salt = bcrypt.gensalt()
-        password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
-
-        # Insert new user into the database
-        mongo.db.users.insert_one({
-            'username': username,
-            'password': password_hash,
-            'created_at': datetime.now()
-        })
-
-        flash('Registration successful! Please log in.')
-        return redirect(url_for('login'))
-
-    return render_template('register.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        user_data = mongo.db.users.find_one({'username': username})
-        if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
-            user = User(user_data)
-            login_user(user)
-
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('index'))
-
-        flash('Invalid username or password.')
-
-    return render_template('login.html')
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
 
 @app.route('/game')
 @login_required

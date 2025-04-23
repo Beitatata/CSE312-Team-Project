@@ -207,19 +207,33 @@ socket.on('player_left', username => {
 
 let gameOver = false;
 
-socket.on('player_won', data => {
+// Elements related to Flash Banner
+const flashBanner = document.getElementById('flashBanner');
+const flashText   = document.getElementById('flashText');
+const flashClose  = document.getElementById('flashClose');
+
+// Click OK to hide the Banner and proceed with the subsequent logic
+function flashPrompt(msg) {
+  return new Promise(resolve => {
+    flashText.textContent = msg;
+    flashBanner.classList.remove('hidden');
+    flashClose.onclick = () => {
+      flashBanner.classList.add('hidden');
+      resolve();
+    };
+  });
+}
+
+// Used in the player_won callback
+socket.on('player_won', async data => {
   if (gameOver) return;
   gameOver = true;
 
-  if (data.winner === USERNAME) {
-    setTimeout(() => {
-      alert('🎉 You Win!');
-      window.location.href = '/';
-    }, 200);  // Delay prompt again by 200ms
-  } else {
-    setTimeout(() => {
-        alert('💥 ' + data.winner + ' Wins! You Lose!');
-        window.location.href = '/';
-     },200);
-  }
+  const msg = data.winner === USERNAME
+    ? '🎉 You Win!'
+    : `💥 ${data.winner} Wins! You Lose!`;
+
+  await flashPrompt(msg);
+
+  window.location.href = '/';
 });
