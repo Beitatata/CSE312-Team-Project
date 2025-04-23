@@ -74,7 +74,10 @@ def load_user(user_id):
     return None
 
 # Initialize SocketIO and track online users
-socketio = SocketIO(app)
+
+socketio = SocketIO(app,
+                   cors_allowed_origins="*",
+                   ssl_context=None)
 online_users = set()
 
 @socketio.on('join_lobby')
