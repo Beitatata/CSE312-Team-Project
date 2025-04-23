@@ -23,8 +23,7 @@ services:
     image: mongo:latest
     ports:
       - "127.0.0.1:27017:27017"
-    # ports: [SECURITY]
-    # - "27017:27017"
+
     volumes:
       - mongo-data:/data/db
 
