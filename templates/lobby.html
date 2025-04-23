@@ -60,11 +60,12 @@
         socket.emit('start_game', {});
       });
 
-      // on game start, redirect all clients
       socket.on('game_start', data => {
         const room = data.room;
-        window.location.href = `/game?room=${encodeURIComponent(room)}`;
+        const seed = data.seed;
+        window.location.href = `/game?room=${encodeURIComponent(room)}&seed=${seed}`;
       });
+
     });
   </script>
 </body>

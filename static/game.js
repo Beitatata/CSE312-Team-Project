@@ -1,151 +1,225 @@
-// game.js top: global declarations
-let playerImg = null;
+// game.js — Multiplayer Maze Game (with debugging logs)
+const socket = io();
 
-// then immediately assign it
-playerImg = new Image();
-playerImg.src = window.PLAYER_IMG_URL;
-// -- Global state --
+const params = new URLSearchParams(window.location.search);
+const ROOM = params.get('room');
+const seed = parseInt(params.get('seed'), 10);
+const numRows = 20, numCols = 20;
+const goalR = numRows-1, goalC = numCols-1;
+
+const maze = generateMaze(numRows, numCols, seed);
+
+const USERNAME   = window.PLAYER_NAME || 'Guest';
+const AVATAR_URL = window.PLAYER_IMG_URL || null;
+
+socket.emit('join_room', { room: ROOM, username: USERNAME });
+
+socket.on('update_players', players => {
+  const ul = document.getElementById('player-names');
+  ul.innerHTML = '';
+  players.forEach(p => {
+    const li = document.createElement('li');
+    li.textContent = p;
+    ul.appendChild(li);
+  });
+});
+
 const canvas = document.getElementById('game-canvas');
 const ctx    = canvas.getContext('2d');
 const SIZE   = Math.min(canvas.clientWidth, canvas.clientHeight);
 canvas.width  = SIZE;
 canvas.height = SIZE;
-const player = {
-  row:       1,
-  col:       1,
-  username:  window.PLAYER_NAME || 'Guest',
-  avatarUrl: window.PLAYER_IMG_URL || null,
-  avatarImg: null
-};
-if (player.avatarUrl) {
-  player.avatarImg = new Image();
-  player.avatarImg.src = player.avatarUrl;
-}
-const numRows = 20, numCols = 20;
-const maze    = generateMaze(numRows, numCols);
-const goalR   = numRows - 2, goalC = numCols - 2;
-maze[goalR][goalC] = 0;
-
 const cell = SIZE / numRows;
 
-// Player uses pixel coordinates to render
-let playerPx = cell + cell/2;  // initial x = col 1
-let playerPy = cell + cell/2;  // initial y = row 1
-let playerRow = 1, playerCol = 1;
+const localPlayer = {
+  username: USERNAME,
+  avatarUrl: AVATAR_URL,
+  row: 1,
+  col: 1,
+  x: cell + cell / 2,
+  y: cell + cell / 2,
+  img: (() => {
+    if (AVATAR_URL) {
+      const i = new Image();
+      i.src = AVATAR_URL;
+      return i;
+    }
+    return null;
+  })()
+};
 
-// movement state
-let moving    = false;
-let targetX   = playerPx;
-let targetY   = playerPy;
-const speed   = 200; // pixels/second
+const otherPlayers = {};
 
-// keyboard input
+let moving = false;
+let targetX = localPlayer.x, targetY = localPlayer.y;
+const speed = 200;
 const keys = {};
-window.addEventListener('keydown',  e => keys[e.key.toLowerCase()] = true);
-window.addEventListener('keyup',    e => keys[e.key.toLowerCase()] = false);
+window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
-// Attempt to start a smooth move
 function tryStartMove(dr, dc) {
   if (moving) return;
-  const nr = playerRow + dr, nc = playerCol + dc;
-  if (nr<0||nr>=numRows||nc<0||nc>=numCols||maze[nr][nc]===1) return;
-  // set target row/col
-  playerRow = nr;
-  playerCol = nc;
-  targetX   = nc*cell + cell/2;
-  targetY   = nr*cell + cell/2;
-  moving    = true;
+  const nr = localPlayer.row + dr;
+  const nc = localPlayer.col + dc;
+
+
+
+  if (nr < 0 || nr >= numRows || nc < 0 || nc >= numCols || maze[nr][nc] === 1) {
+    console.warn(`[MOVE] Blocked or invalid move to (${nr}, ${nc})`);
+    return;
+  }
+
+  console.log(`[MOVE] Moving to (${nr}, ${nc})`);
+
+  localPlayer.row = nr;
+  localPlayer.col = nc;
+  targetX = nc * cell + cell / 2;
+  targetY = nr * cell + cell / 2;
+  moving = true;
+
+  socket.emit('move', { room: ROOM, username: USERNAME, row: nr, col: nc });
 }
 
-// Update each frame, delta is in milliseconds
 let lastTime = performance.now();
 function loop(now) {
-  const delta = (now - lastTime) / 1000; // convert to seconds
-  lastTime    = now;
+
+
+  const delta = (now - lastTime) / 1000;
+  lastTime = now;
 
   if (moving) {
-    // Calculate the distance to move
-    const dx = targetX - playerPx;
-    const dy = targetY - playerPy;
+    const dx = targetX - localPlayer.x;
+    const dy = targetY - localPlayer.y;
     const dist = Math.hypot(dx, dy);
     const step = speed * delta;
-
     if (step >= dist) {
-      // If reached or passed the target, snap to it
-      playerPx = targetX;
-      playerPy = targetY;
-      moving   = false;
+      localPlayer.x = targetX;
+      localPlayer.y = targetY;
+      moving = false;
     } else {
-      // Move proportionally
-      playerPx += dx / dist * step;
-      playerPy += dy / dist * step;
+      localPlayer.x += dx / dist * step;
+      localPlayer.y += dy / dist * step;
     }
   } else {
-    // If not moving, listen for new keys to start moving
-    if (keys['w'] || keys['arrowup'])    tryStartMove(-1, 0);
-    else if (keys['s'] || keys['arrowdown']) tryStartMove( 1, 0);
-    else if (keys['a'] || keys['arrowleft']) tryStartMove( 0,-1);
-    else if (keys['d'] || keys['arrowright'])tryStartMove( 0, 1);
+    if (keys['w'] || keys['arrowup']) tryStartMove(-1, 0);
+    else if (keys['s'] || keys['arrowdown']) tryStartMove(1, 0);
+    else if (keys['a'] || keys['arrowleft']) tryStartMove(0, -1);
+    else if (keys['d'] || keys['arrowright']) tryStartMove(0, 1);
   }
 
-  // Draw
   drawMaze();
-  // Draw player: use playerPx/playerPy
-  drawPlayer();
+  Object.values(otherPlayers).forEach(p => {
+      const dx = p.targetX - p.x;
+      const dy = p.targetY - p.y;
+      const dist = Math.hypot(dx, dy);
+      const step = speed * delta;
 
-  // Check win condition
-  if (!moving && playerRow===goalR && playerCol===goalC) {
-    setTimeout(() => {
-      alert('🎉 You Win!');
-      // After pressing OK, return to homepage
-      window.location.href = '/';
-    }, 50);
-    return; // Stop the loop
-  }
+      if (dist > 0.1) {
+        p.x += dx / dist * Math.min(step, dist);
+        p.y += dy / dist * Math.min(step, dist);
+      }
+      drawCircle(p.x, p.y, cell * 0.35, p.img, p.username);
+  });
+  drawCircle(localPlayer.x, localPlayer.y, cell * 0.35, localPlayer.img, localPlayer.username);
+
 
   requestAnimationFrame(loop);
 }
-
-// Start the loop
 requestAnimationFrame(loop);
 
-// Maze drawing remains unchanged
 function drawMaze() {
-  ctx.clearRect(0,0,SIZE,SIZE);
+  ctx.clearRect(0, 0, SIZE, SIZE);
   ctx.fillStyle = '#222';
-  for (let r=0; r<numRows; r++) {
-    for (let c=0; c<numCols; c++) {
-      if (maze[r][c]) ctx.fillRect(c*cell, r*cell, cell, cell);
-    }
-  }
-  // Draw the exit
+  for (let r = 0; r < numRows; r++)
+    for (let c = 0; c < numCols; c++)
+      if (maze[r][c]) ctx.fillRect(c * cell, r * cell, cell, cell);
   ctx.fillStyle = 'rgba(0,255,0,0.4)';
-  ctx.fillRect(goalC*cell, goalR*cell, cell, cell);
+  ctx.fillRect(goalC * cell, goalR * cell, cell, cell);
 }
 
-function drawPlayer() {
-  const x = playerPx, y = playerPy, r = cell * 0.35;
-
-  // Only draw avatar when playerImg is non-null, loaded, and has valid dimensions
-  if (playerImg && playerImg.complete && playerImg.naturalWidth > 0) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.drawImage(playerImg, x - r, y - r, r * 2, r * 2);
-    ctx.restore();
+function drawCircle(x, y, r, img, username) {
+  if (img && img.complete && img.naturalWidth > 0) {
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.clip();
+    ctx.drawImage(img, x - r, y - r, 2 * r, 2 * r); ctx.restore();
   } else {
-    // Fallback: draw a default solid circle
-    ctx.fillStyle = getComputedStyle(document.documentElement)
-                     .getPropertyValue('--primary-color').trim();
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle    = '#fff';
-    ctx.textAlign    = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font         = '8px Orbitron';
-    ctx.fillText(player.username, x, y);
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+    ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '8px Orbitron'; ctx.fillText(username, x, y);
   }
 }
+
+// Socket handlers for players
+socket.on('join_game_ack', data => {
+
+  data.players.forEach(p => {
+    if (p.username !== USERNAME) {
+      otherPlayers[p.username] = {
+        username: p.username,
+        avatarUrl: p.avatarUrl,
+        row: p.row, col: p.col,
+        x: p.col * cell + cell / 2,
+        y: p.row * cell + cell / 2,
+        targetX: p.col * cell + cell / 2,
+        targetY: p.row * cell + cell / 2,
+        img: (() => {
+          if (!p.avatarUrl || p.avatarUrl === 'null') return null;  // Do not load invalid avatars
+          const i = new Image();
+          i.src = p.avatarUrl;
+          return i;
+        })()
+      };
+    }
+  });
+});
+
+socket.on('player_joined', p => {
+  console.log('[player_joined]', p.username, 'avatarUrl:', p.avatarUrl);
+  if (p.username !== USERNAME) {
+    otherPlayers[p.username] = {
+      ...p,
+      x: p.col * cell + cell / 2,
+      y: p.row * cell + cell / 2,
+      targetX: p.col * cell + cell/2,
+      targetY: p.row * cell + cell/2,
+      img: (() => {
+          if (!p.avatarUrl || p.avatarUrl === 'null') return null;  // Do not load invalid avatars
+          const i = new Image();
+          i.src = p.avatarUrl;
+          return i;
+        })()
+    };
+  }
+});
+
+
+socket.on('player_moved', p => {
+  if (p.username !== USERNAME && otherPlayers[p.username]) {
+    otherPlayers[p.username].row = p.row;
+    otherPlayers[p.username].col = p.col;
+    otherPlayers[p.username].targetX = p.col * cell + cell / 2;
+    otherPlayers[p.username].targetY = p.row * cell + cell / 2;
+  }
+});
+socket.on('player_left', username => {
+  console.log('[SOCKET] player_left:', username);
+  delete otherPlayers[username];
+});
+
+let gameOver = false;
+
+socket.on('player_won', data => {
+  if (gameOver) return;
+  gameOver = true;
+
+  if (data.winner === USERNAME) {
+    setTimeout(() => {
+      alert('🎉 You Win!');
+      window.location.href = '/';
+    }, 200);  // Delay prompt again by 200ms
+  } else {
+    setTimeout(() => {
+        alert(`💥 ${data.winner} Wins! You Lose!`);
+        window.location.href = '/';
+     },50);
+  }
+});

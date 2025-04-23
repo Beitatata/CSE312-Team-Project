@@ -90,7 +90,9 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
+
     }
+
     #stars-canvas,
     #game-canvas {
       position: absolute;
@@ -159,6 +161,7 @@
     }
     .key-action { font-size: 0.8rem; color: var(--light-color); }
   </style>
+
 </head>
 <body>
   <div class="game-container">
@@ -183,7 +186,19 @@
     <div class="game-content">
       <canvas id="stars-canvas"></canvas>
       <canvas id="game-canvas"></canvas>
-
+      <div id="player-list" style="
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 15px;
+        border-radius: 10px;
+        font-family: 'Orbitron', sans-serif;
+        z-index: 2;
+      ">
+        <h3 style="margin-bottom: 10px;">Players</h3>
+        <ul id="player-names" style="list-style: none; padding: 0; margin: 0;"></ul>
+      </div>
       <div class="game-message">
         Welcome, {{ current_user.username }}! Move with WASD keys.
       </div>
@@ -201,10 +216,14 @@
 
     window.PLAYER_IMG_URL = "{{ url_for('static', filename='uploads/' ~ current_user.avatar) }}";
     window.PLAYER_NAME    = "{{ current_user.username }}";
+    window.MAZE_SEED = "{{ seed_from_backend }}";
   </script>
   <!-- External JavaScript files -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+
   <script src="{{ url_for('static', filename='starfield.js') }}"></script>
   <script src="{{ url_for('static', filename='maze.js') }}"></script>
+
   <script src="{{ url_for('static', filename='game.js') }}"></script>
 </body>
 </html>

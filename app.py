@@ -1,22 +1,20 @@
 import os
+import random
 import logging
-
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_pymongo import PyMongo
 from flask_login import (
-    LoginManager,
-    UserMixin,
-    login_user,
-    logout_user,
-    login_required,
-    current_user
+    LoginManager, UserMixin,
+    login_user, logout_user,
+    login_required, current_user
 )
+from flask_socketio import SocketIO, emit, join_room, leave_room
+import uuid
 import bcrypt
 import json
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
-from flask_socketio import SocketIO, emit, join_room, leave_room
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -58,8 +56,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# User model for authentication
-class User(UserMixin):
+# User model for authentication\ nclass User(UserMixin):
     def __init__(self, user_data):
         self.id = str(user_data['_id'])
         self.username = user_data['username']
@@ -76,66 +73,6 @@ def load_user(user_id):
         return User(user_data)
     return None
 
-# Home page route
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-# User registration route
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        # Check if the username is already taken
-        if mongo.db.users.find_one({'username': username}):
-            flash('Username already exists.')
-            return redirect(url_for('register'))
-
-        # Hash the password with bcrypt
-        salt = bcrypt.gensalt()
-        password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
-
-        # Insert new user into the database
-        user_id = mongo.db.users.insert_one({
-            'username': username,
-            'password': password_hash,
-            'created_at': datetime.now()
-        }).inserted_id
-
-        flash('Registration successful! Please log in.')
-        return redirect(url_for('login'))
-
-    return render_template('register.html')
-
-# User login route
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        # Retrieve user from database
-        user_data = mongo.db.users.find_one({'username': username})
-
-        if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
-            user = User(user_data)
-            login_user(user)
-
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('index'))
-
-        flash('Invalid username or password.')
-
-    return render_template('login.html')
-
-# User logout route
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
 # Initialize SocketIO and track online users
 socketio = SocketIO(app)
 online_users = set()
@@ -157,33 +94,163 @@ def handle_leave_lobby():
         emit('update_user_list', list(online_users), room='lobby')
 
 @socketio.on('disconnect')
-def on_disconnect():
+def handle_disconnect():
     if current_user.is_authenticated:
         username = current_user.username
         online_users.discard(username)
         leave_room('lobby')
         emit('update_user_list', list(online_users), room='lobby')
 
-# Protected game route
+    sid = request.sid
+
+    for room, players in rooms.items():
+        for username, player in list(players.items()):
+            if player.get('sid') == sid:
+                del rooms[room][username]
+                emit('player_left', username, room=room)
+                emit('update_players', list(rooms[room].keys()), room=room)
+                break
+
+# Added: After receiving 'start_game' from frontend, broadcast from server\ n@socketio.on('start_game')
+def handle_start_game(data):
+    # 1) Generate a unique room name for this game
+    seed = random.randint(0, 2**31-1)
+    room = data.get('room') or str(uuid.uuid4())
+    # 2) Notify all clients in the lobby: game started, go to /game?room=xxx
+    emit('game_start', {'room': room, 'seed': seed}, room='lobby')
+
+rooms = {}
+@socketio.on('join_room')
+def handle_join_room(data):
+    room = data['room']
+    username = data['username']
+    avatar_filename = current_user.avatar
+    avatar_url = url_for('static', filename=f'uploads/{avatar_filename}') if avatar_filename else None
+    sid = request.sid
+
+    join_room(room)
+
+    if room not in rooms:
+        rooms[room] = {}
+
+    rooms[room][username] = {
+        'username': username,
+        'avatarUrl': avatar_url,
+        'row': 1,
+        'col': 1,
+        'sid': sid
+    }
+
+    # Acknowledge to the joining client: who is already in the room
+    others = [v for k, v in rooms[room].items() if k != username]
+    emit('join_game_ack', {'players': others})
+
+    # Notify others: a new player has joined
+    emit('player_joined', {
+        'username': username,
+        'avatarUrl': avatar_url,
+        'row': 1,
+        'col': 1
+    }, room=room, include_self=False)
+
+    # Sync player list for everyone
+    emit('update_players', list(rooms[room].keys()), room=room)
+
+@socketio.on('move')
+def handle_move(data):
+    room = data['room']
+    username = data['username']
+    row = data['row']
+    col = data['col']
+
+    # Update the server-side record of the player's position
+    if room in rooms and username in rooms[room]:
+        rooms[room][username]['row'] = row
+        rooms[room][username]['col'] = col
+
+    # Broadcast the move to other players (excluding the mover)
+    emit('player_moved', {
+        'username': username,
+        'row': row,
+        'col': col
+    }, room=room, include_self=False)
+    goal_row = 19  # e.g., numRows - 2
+    goal_col = 19  # e.g., numCols - 2
+    if row == goal_row and col == goal_col:
+        print(f"[WIN] {username} has reached the goal!")
+        emit('player_won', {'winner': username}, room=room)
+
+# Routes
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route('/lobby')
 @login_required
 def lobby():
     return render_template('lobby.html', username=current_user.username)
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Check if the username is already taken
+        if mongo.db.users.find_one({'username': username}):
+            flash('Username already exists.')
+            return redirect(url_for('register'))
+
+        # Hash the password with bcrypt
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
+
+        # Insert new user into the database
+        mongo.db.users.insert_one({
+            'username': username,
+            'password': password_hash,
+            'created_at': datetime.now()
+        })
+
+        flash('Registration successful! Please log in.')
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        user_data = mongo.db.users.find_one({'username': username})
+        if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
+            user = User(user_data)
+            login_user(user)
+
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('index'))
+
+        flash('Invalid username or password.')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 @app.route('/game')
 @login_required
 def game():
-    return render_template('game.html')
+    room = request.args.get('room')
+    return render_template('game.html', room=room, username=current_user.username)
 
 # Configuration for file uploads
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# Flask requires a secret key for flash messages
-app.secret_key = os.environ.get("SECRET_KEY", "default_secret_key")
-
-# Ensure upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
@@ -192,7 +259,6 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
     )
 
-# This is the upload_picture route you need
 @app.route('/upload', methods=['POST'])
 @login_required
 def upload_picture():
@@ -223,4 +289,4 @@ def upload_picture():
     return redirect(request.referrer or '/')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    socketio.run(app, host='0.0.0.0', port=8080, debug=False, allow_unsafe_werkzeug=True)
