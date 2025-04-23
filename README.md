@@ -1,4 +1,4 @@
-# domain
+# Domain
 The domain name https://cse312tictactoe.cse312.dev
 # MMO Game Project
 
