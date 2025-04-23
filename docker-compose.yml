@@ -22,7 +22,7 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - "27020:27020"
     # ports: [SECURITY]
     # - "27017:27017"
     volumes:
