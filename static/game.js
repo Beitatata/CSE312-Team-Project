@@ -58,7 +58,7 @@ window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
 window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
 function tryStartMove(dr, dc) {
-  if (moving) return;
+    if (gameOver || moving) return;
   const nr = localPlayer.row + dr;
   const nc = localPlayer.col + dc;
 
