@@ -1,3 +1,5 @@
+# Domain
+The domain name https://cse312tictactoe.cse312.dev
 # MMO Game Project
 
 A real-time multiplayer online game built with Flask/Python for the team project.
