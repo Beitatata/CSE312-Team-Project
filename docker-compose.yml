@@ -9,10 +9,12 @@ services:
       - "8080:8080"
     depends_on:
       - mongo
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017/mmo_game
-      - SECRET_KEY=your_secret_key_here
-      - FLASK_APP=app.py
+    # environment:
+    #   - MONGODB_URI=mongodb://mongo:27017/mmo_game
+    #   - SECRET_KEY=your_secret_key_here
+    #   - FLASK_APP=app.py
+    env_file:
+      - .env
     volumes:
       - ./logs:/app/logs
       - ./templates:/app/templates

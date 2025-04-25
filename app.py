@@ -15,11 +15,14 @@ import bcrypt
 import json
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "default_secret_key")
-app.config["MONGO_URI"] = os.environ.get("MONGODB_URI", "mongodb://localhost:27017/mmo_game")
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+app.config["MONGO_URI"] = os.environ.get("MONGODB_URI", "mongodb://mongo:27017/mmo_game")
 
 # Configure logging directory and logger
 logs_dir = 'logs'
