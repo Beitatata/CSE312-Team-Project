@@ -1,74 +1,61 @@
-# Domain
-The domain name https://cse312tictactoe.cse312.dev
-# MMO Game Project
 
-A real-time multiplayer online game built with Flask/Python for the team project.
+# MMO Maze Game
 
-## Setup Instructions
+A multiplayer online maze game built with Flask and Socket.IO.
 
-### Prerequisites
-- Docker and Docker Compose installed on your machine
+## Deployment Link
 
-### Running the Application
+The game is deployed and can be accessed at:
+https://cse312tictactoe.cse312.dev
+
+## Project Overview
+
+This is a multiplayer online maze game where players can move through a maze using WASD keys and interact with other players in real-time. The first player to reach the bottom-right corner of the maze wins.
+
+## Features
+
+- User registration and login system
+- User avatar upload functionality
+- Real-time multiplayer game lobby
+- Randomly generated mazes based on seed values
+- Real-time player position synchronization
+- Win conditions and game completion notifications
+
+## Technology Stack
+
+- **Backend**: Flask, Flask-SocketIO, Flask-Login
+- **Database**: MongoDB
+- **Frontend**: JavaScript, HTML5 Canvas
+- **Real-time Communication**: Socket.IO
+- **Containerization**: Docker & Docker Compose
+- **Security**: HTTPS, WSS, bcrypt password encryption
+
+## Local Setup
+
+To run this application locally:
+
 1. Clone the repository
    ```
    git clone <your-repo-url>
    cd <project-directory>
    ```
+2. Create a .env file in the project root directory, referring to the .env.example file format
 
-2. Start the application using Docker Compose
+3. Start the application using Docker Compose
    ```
    docker compose up
    ```
 
-3. Access the application in your browser
+4. Access in your browser
    ```
    http://localhost:8080
    ```
 
-## Project Features
+## Security Measures
 
-### Docker Compose
-- Application runs on port 8080
-- MongoDB database runs in a separate container
-
-### Authentication
-- User registration with salted and hashed passwords
-- User login with secure session management
-- HttpOnly cookies for authentication tokens
-- Visual indicator for logged-in users
-
-### Logging
-- Server requests logged to a file outside the Docker container
-- Logs include IP address, HTTP method, path, and timestamp
-
-## Project Structure
-```
-├── docker-compose.yml    # Docker Compose configuration
-├── Dockerfile            # Docker configuration for the app
-├── app.py                # Main Flask application
-├── requirements.txt      # Python dependencies
-├── templates/            # HTML templates
-│   ├── index.html        # Home page
-│   ├── login.html        # Login page
-│   ├── register.html     # Registration page
-│   └── game.html         # Game page (authenticated)
-├── logs/                 # Server logs directory
-└── README.md             # Project documentation
-```
-
-## Testing
-
-Once the application is running:
-
-1. Register a new account at http://localhost:8080/register
-2. Login with your credentials at http://localhost:8080/login
-3. After logging in, you'll see your username displayed on the home page
-4. Click "Enter Game" to access the game page
-5. You can move your character with the WASD keys
-6. Check the logs directory for server request logs
-
-## Security Features
+This project implements several security measures:
 - Passwords are salted and hashed using bcrypt
-- Authentication tokens are stored as hashes in the database
-- Cookies are set with HttpOnly flag
+- Persistent sessions with HttpOnly cookies
+- Secure file upload handling
+- HTTPS and WSS in production environment
+- MongoDB limited to internal container access only
