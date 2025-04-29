@@ -63,7 +63,7 @@
                 </div>
                 <!-- upload picture -->
                 <form action="{{ url_for('upload_picture') }}" method="POST" enctype="multipart/form-data" style="margin-top:30px;">
-                    <label for="picture">Upload Your Avatar:</label><br>
+                    <label for="picture">Upload Your Avatar: (Max file size: 2MB)</label><br>
                     <input type="file" id="picture" name="picture" accept="image/*" required style="margin-top:10px;"><br><br>
                     <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
