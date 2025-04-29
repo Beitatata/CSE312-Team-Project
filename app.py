@@ -96,13 +96,17 @@ class LoggingMiddleware:
             # Remove auth tokens from headers
             filtered_headers = []
             for name, value in response_captured['headers']:
-                if name.lower() == 'set-cookie' and 'session=' in value:
-                    # Remove the session token but keep other cookies
+                if name.lower() == 'set-cookie':
                     parts = value.split(';')
-                    if any(part.strip().startswith('session=') for part in parts):
-                        cookie_parts = [part for part in parts if not part.strip().startswith('session=')]
+                    if any(part.strip().startswith('session=') for part in parts) or any(part.strip().startswith('auth_token=') for part in parts):
+                        cookie_parts = [part for part in parts if not (
+                            part.strip().startswith('session=') or 
+                            part.strip().startswith('auth_token=')
+                        )]
                         if cookie_parts:
                             filtered_headers.append((name, '; '.join(cookie_parts)))
+                    else:
+                        filtered_headers.append((name, value))
                 else:
                     filtered_headers.append((name, value))
             
@@ -142,7 +146,7 @@ def log_request_info():
         # Filter out sensitive cookies (like session tokens)
         cookies = {}
         for k, v in request.cookies.items():
-            if k != 'session':  # Skip session token
+            if k != 'session'and k != 'auth_token':  # Skip token
                 cookies[k] = v
         
         # Base log data
@@ -171,7 +175,10 @@ def log_request_info():
             if k.lower() == 'cookie':
                 # Parse cookies and remove session
                 cookie_parts = v.split(';')
-                filtered_cookies = [c for c in cookie_parts if not c.strip().startswith('session=')]
+                filtered_cookies = [c for c in cookie_parts if not (
+                    c.strip().startswith('session=') or 
+                    c.strip().startswith('auth_token=')
+                )]
                 if filtered_cookies:
                     filtered_headers[k] = '; '.join(filtered_cookies)
             elif k.lower() != 'authorization':
@@ -323,7 +330,7 @@ def login():
             # Log failed login attempt - user doesn't exist
             logger.warning(f"Login failed: Username '{username}' does not exist.")
             flash('Invalid username or password.')
-            return render_template('login.html')
+            return render_template('login.html'), 400
             
         if bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
             user = User(user_data)
@@ -338,6 +345,7 @@ def login():
             # Log failed login attempt - wrong password
             logger.warning(f"Login failed: User '{username}' tried to log in with the wrong password.")
             flash('Invalid username or password.')
+            return render_template('login.html'), 400
 
     return render_template('login.html')
 
