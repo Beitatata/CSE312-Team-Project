@@ -36,6 +36,7 @@ def format_timestamp(dt=None):
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 app.config["MONGO_URI"] = os.environ.get("MONGODB_URI", "mongodb://mongo:27017/mmo_game")
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB
 
 # Configure logging directories
 logs_dir = 'logs'
@@ -241,6 +242,10 @@ def handle_exception(e):
     
     # Return an error response
     return render_template('error.html', error=str(e)), 500
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return render_template('error.html', error="Uploaded file is too large (maximum 2MB allowed)."), 413
 
 # Initialize MongoDB client
 mongo = PyMongo(app)
