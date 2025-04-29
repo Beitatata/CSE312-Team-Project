@@ -11,6 +11,8 @@ services:
       - mongo
     env_file:
       - .env
+    environment:
+      - TZ=America/New_York
     volumes:
       - ./logs:/app/logs
       - ./templates:/app/templates
@@ -21,6 +23,9 @@ services:
     image: mongo:latest
     ports:
       - "127.0.0.1:27017:27017"
+
+    environment:
+      - TZ=America/New_York
 
     volumes:
       - mongo-data:/data/db

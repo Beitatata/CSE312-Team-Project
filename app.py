@@ -3,6 +3,7 @@ import random
 import logging
 import traceback
 import json
+import pytz
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, Response, g
 from flask_pymongo import PyMongo
@@ -20,6 +21,16 @@ from dotenv import load_dotenv
 import io
 
 load_dotenv()
+
+app_timezone = pytz.timezone('America/New_York')
+
+def get_current_time():
+    return datetime.now(app_timezone)
+
+def format_timestamp(dt=None):
+    if dt is None:
+        dt = get_current_time()
+    return dt.isoformat()
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -138,7 +149,7 @@ def log_request_info():
             'ip': request.remote_addr,
             'method': request.method,
             'path': request.path,
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': format_timestamp(),
             'headers': headers,
             'cookies': cookies
         }
@@ -207,7 +218,7 @@ def log_response_info(response):
             'method': request.method,
             'path': request.path,
             'status_code': response.status_code,
-            'timestamp': datetime.now().isoformat()
+            'timestamp': format_timestamp()
         }
         
         # Add username to log if user is authenticated
@@ -284,7 +295,7 @@ def register():
         mongo.db.users.insert_one({
             'username': username,
             'password': password_hash,
-            'created_at': datetime.now()
+            'created_at': format_timestamp()
         })
 
         # Log successful registration
