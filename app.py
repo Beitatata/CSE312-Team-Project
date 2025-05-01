@@ -24,13 +24,16 @@ load_dotenv()
 
 app_timezone = pytz.timezone('America/New_York')
 
+
 def get_current_time():
     return datetime.now(app_timezone)
+
 
 def format_timestamp(dt=None):
     if dt is None:
         dt = get_current_time()
     return dt.isoformat()
+
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -61,29 +64,30 @@ http_logger.addHandler(http_handler)
 # Maximum size for logging raw HTTP content (2048 bytes)
 MAX_HTTP_LOG_SIZE = 2048
 
+
 # Class to capture and log response data
 class LoggingMiddleware:
     def __init__(self, app):
         self.app = app
-        
+
     def __call__(self, environ, start_response):
         # Create a response wrapper to capture status code
         response_captured = {}
-        
+
         def _start_response(status, headers, exc_info=None):
             response_captured['status'] = status
             response_captured['headers'] = headers
             return start_response(status, headers, exc_info)
-        
+
         # Process request as normal
         output = self.app(environ, _start_response)
-        
+
         # Capture the response body, if needed
         response_body = b''
         for chunk in output:
             response_body += chunk
             yield chunk
-        
+
         # Log raw HTTP response (headers only for non-text or if over size limit)
         try:
             is_text = False
@@ -92,29 +96,25 @@ class LoggingMiddleware:
                 if name.lower() == 'content-type' and ('text/' in value.lower() or 'application/json' in value.lower()):
                     is_text = True
                     content_type = value
-                    
+
             # Remove auth tokens from headers
             filtered_headers = []
             for name, value in response_captured['headers']:
-                if name.lower() == 'set-cookie':
+                if name.lower() == 'set-cookie' and 'session=' in value:
+                    # Remove the session token but keep other cookies
                     parts = value.split(';')
-                    if any(part.strip().startswith('session=') for part in parts) or any(part.strip().startswith('auth_token=') for part in parts):
-                        cookie_parts = [part for part in parts if not (
-                            part.strip().startswith('session=') or 
-                            part.strip().startswith('auth_token=')
-                        )]
+                    if any(part.strip().startswith('session=') for part in parts):
+                        cookie_parts = [part for part in parts if not part.strip().startswith('session=')]
                         if cookie_parts:
                             filtered_headers.append((name, '; '.join(cookie_parts)))
-                    else:
-                        filtered_headers.append((name, value))
                 else:
                     filtered_headers.append((name, value))
-            
+
             response_log = {
                 'status': response_captured['status'],
                 'headers': dict(filtered_headers)
             }
-            
+
             # Log body for text responses if under size limit
             if is_text and len(response_body) <= MAX_HTTP_LOG_SIZE:
                 try:
@@ -126,29 +126,31 @@ class LoggingMiddleware:
                 response_log['body_sample'] = response_body[:MAX_HTTP_LOG_SIZE].decode('utf-8', errors='ignore')
             else:
                 response_log['body'] = '[Binary content, headers only]'
-                
+
             http_logger.info(f"RESPONSE: {json.dumps(response_log)}")
         except Exception as e:
             logger.error(f"Error logging response: {str(e)}")
             logger.error(traceback.format_exc())
 
+
 # Register middleware
 app.wsgi_app = LoggingMiddleware(app.wsgi_app)
+
 
 # Middleware to log each request's details
 @app.before_request
 def log_request_info():
     try:
         # Extract headers and cookies
-        headers = {k: v for k, v in request.headers.items() 
-                  if k.lower() != 'authorization' and k.lower() != 'cookie'}
-        
+        headers = {k: v for k, v in request.headers.items()
+                   if k.lower() != 'authorization' and k.lower() != 'cookie'}
+
         # Filter out sensitive cookies (like session tokens)
         cookies = {}
         for k, v in request.cookies.items():
-            if k != 'session'and k != 'auth_token':  # Skip token
+            if k != 'session':  # Skip session token
                 cookies[k] = v
-        
+
         # Base log data
         log_data = {
             'ip': request.remote_addr,
@@ -158,38 +160,35 @@ def log_request_info():
             'headers': headers,
             'cookies': cookies
         }
-        
+
         # Add username to log if user is authenticated
         if current_user.is_authenticated:
             log_data['username'] = current_user.username
-        
+
         # Log to main application log
         logger.info(json.dumps(log_data))
-        
+
         # Log raw HTTP request (headers only for sensitive routes or non-text content)
-        is_sensitive = request.path in ['/login', '/register'] 
-        
+        is_sensitive = request.path in ['/login', '/register']
+
         # Filter request headers (remove auth tokens)
         filtered_headers = {}
         for k, v in request.headers.items():
             if k.lower() == 'cookie':
                 # Parse cookies and remove session
                 cookie_parts = v.split(';')
-                filtered_cookies = [c for c in cookie_parts if not (
-                    c.strip().startswith('session=') or 
-                    c.strip().startswith('auth_token=')
-                )]
+                filtered_cookies = [c for c in cookie_parts if not c.strip().startswith('session=')]
                 if filtered_cookies:
                     filtered_headers[k] = '; '.join(filtered_cookies)
             elif k.lower() != 'authorization':
                 filtered_headers[k] = v
-        
+
         request_log = {
             'method': request.method,
             'path': request.path,
             'headers': filtered_headers
         }
-        
+
         # For non-sensitive routes with text content, include body if under size limit
         if not is_sensitive and request.content_length and request.content_length <= MAX_HTTP_LOG_SIZE:
             content_type = request.headers.get('Content-Type', '')
@@ -200,7 +199,7 @@ def log_request_info():
                 content = request.stream.read(MAX_HTTP_LOG_SIZE)
                 # Reset position
                 request.stream.seek(position)
-                
+
                 try:
                     request_log['body'] = content.decode('utf-8')
                 except UnicodeDecodeError:
@@ -211,12 +210,13 @@ def log_request_info():
             request_log['body'] = '[Sensitive content, headers only]'
         elif request.content_length and request.content_length > MAX_HTTP_LOG_SIZE:
             request_log['body'] = f'[Content truncated, over {MAX_HTTP_LOG_SIZE} bytes]'
-        
+
         http_logger.info(f"REQUEST: {json.dumps(request_log)}")
-    
+
     except Exception as e:
         logger.error(f"Error logging request: {str(e)}")
         logger.error(traceback.format_exc())
+
 
 # Log response status code after each request
 @app.after_request
@@ -228,17 +228,18 @@ def log_response_info(response):
             'status_code': response.status_code,
             'timestamp': format_timestamp()
         }
-        
+
         # Add username to log if user is authenticated
         if current_user.is_authenticated:
             log_data['username'] = current_user.username
-            
+
         logger.info(f"Response: {json.dumps(log_data)}")
     except Exception as e:
         logger.error(f"Error logging response: {str(e)}")
         logger.error(traceback.format_exc())
-        
+
     return response
+
 
 # Error handling with logging
 @app.errorhandler(Exception)
@@ -246,13 +247,15 @@ def handle_exception(e):
     # Log the stack trace
     logger.error(f"Unhandled exception: {str(e)}")
     logger.error(traceback.format_exc())
-    
+
     # Return an error response
     return render_template('error.html', error=str(e)), 500
+
 
 @app.errorhandler(413)
 def request_entity_too_large(error):
     return render_template('error.html', error="Uploaded file is too large (maximum 2MB allowed)."), 413
+
 
 # Initialize MongoDB client
 mongo = PyMongo(app)
@@ -262,6 +265,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+
 # User model for authentication
 class User(UserMixin):
     def __init__(self, user_data):
@@ -269,9 +273,13 @@ class User(UserMixin):
         self.username = user_data['username']
         self.password_hash = user_data['password']
         self.avatar = user_data.get('avatar')
+        self.won = 0
+        self.lose = 0
+        self.played = 0
 
     def get_id(self):
         return self.id
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -280,9 +288,11 @@ def load_user(user_id):
         return User(user_data)
     return None
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -292,7 +302,7 @@ def register():
 
         # Check if the username is already taken
         existing_user = mongo.db.users.find_one({'username': username})
-        
+
         if existing_user:
             # Log failed registration attempt
             logger.warning(f"Registration failed: Username '{username}' already exists.")
@@ -307,16 +317,20 @@ def register():
         mongo.db.users.insert_one({
             'username': username,
             'password': password_hash,
+            "won": 0,
+            "lose": 0,
+            "played": 0,
             'created_at': format_timestamp()
         })
 
         # Log successful registration
         logger.info(f"Registration successful: User '{username}' created.")
-        
+
         flash('Registration successful! Please log in.')
         return redirect(url_for('login'))
 
     return render_template('register.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -325,17 +339,17 @@ def login():
         password = request.form.get('password')
 
         user_data = mongo.db.users.find_one({'username': username})
-        
+
         if not user_data:
             # Log failed login attempt - user doesn't exist
             logger.warning(f"Login failed: Username '{username}' does not exist.")
             flash('Invalid username or password.')
-            return render_template('login.html'), 400
-            
+            return render_template('login.html')
+
         if bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
             user = User(user_data)
             login_user(user)
-            
+
             # Log successful login
             logger.info(f"Login successful: User '{username}' logged in.")
 
@@ -345,20 +359,21 @@ def login():
             # Log failed login attempt - wrong password
             logger.warning(f"Login failed: User '{username}' tried to log in with the wrong password.")
             flash('Invalid username or password.')
-            return render_template('login.html'), 400
 
     return render_template('login.html')
+
 
 @app.route('/logout')
 @login_required
 def logout():
     username = current_user.username
     logout_user()
-    
+
     # Log logout
     logger.info(f"Logout: User '{username}' logged out.")
-    
+
     return redirect(url_for('index'))
+
 
 # Initialize SocketIO and track online users
 socketio = SocketIO(app,
@@ -366,10 +381,12 @@ socketio = SocketIO(app,
                     ssl_context=None)
 online_users = set()
 
+
 @app.route('/lobby')
 @login_required
 def lobby():
     return render_template('lobby.html', username=current_user.username)
+
 
 @socketio.on('join_lobby')
 def handle_join_lobby():
@@ -378,9 +395,10 @@ def handle_join_lobby():
         online_users.add(username)
         join_room('lobby')
         emit('update_user_list', list(online_users), room='lobby')
-        
+
         # Log user joined lobby
         logger.info(f"Socket: User '{username}' joined lobby.")
+
 
 @socketio.on('leave_lobby')
 def handle_leave_lobby():
@@ -389,9 +407,10 @@ def handle_leave_lobby():
         online_users.discard(username)
         leave_room('lobby')
         emit('update_user_list', list(online_users), room='lobby')
-        
+
         # Log user left lobby
         logger.info(f"Socket: User '{username}' left lobby.")
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -400,7 +419,8 @@ def handle_disconnect():
         online_users.discard(username)
         leave_room('lobby')
         emit('update_user_list', list(online_users), room='lobby')
-        
+        mongo.db.ingame.update_one({"players": username}, {"$pull": {"players": username}})
+
         # Log user disconnected
         logger.info(f"Socket: User '{username}' disconnected.")
 
@@ -412,25 +432,30 @@ def handle_disconnect():
                 del rooms[room][username]
                 emit('player_left', username, room=room)
                 emit('update_players', list(rooms[room].keys()), room=room)
-                
+                logger.info(f"Socket: Player '{username}' disconnected from game room '{room}'.")
                 # Log player left game
                 logger.info(f"Game: Player '{username}' left game room '{room}'.")
                 break
 
+
 @socketio.on('start_game')
 def handle_start_game(data):
     # 1) Generate a unique room name for this game
-    seed = random.randint(0, 2**31-1)
+    seed = random.randint(0, 2 ** 31 - 1)
     room = data.get('room') or str(uuid.uuid4())
-    
+    mongo.db.ingame.insert_one({"room": room, "players": []})
+
     # Log game starting
     if current_user.is_authenticated:
         logger.info(f"Game: User '{current_user.username}' started a new game with room '{room}' and seed {seed}.")
-    
+
     # 2) Notify all clients in the lobby: game started, go to /game?room=xxx
     emit('game_start', {'room': room, 'seed': seed}, room='lobby')
 
+
 rooms = {}
+
+
 @socketio.on('join_room')
 def handle_join_room(data):
     room = data['room']
@@ -440,7 +465,7 @@ def handle_join_room(data):
     sid = request.sid
 
     join_room(room)
-    
+
     # Log player joined game room
     logger.info(f"Game: Player '{username}' joined game room '{room}'.")
 
@@ -468,7 +493,10 @@ def handle_join_room(data):
     }, room=room, include_self=False)
 
     # Sync player list for everyone
+    mongo.db.ingame.update_one({"room": room}, {"$push": {"players": username}})
+    mongo.db.ingame.delete_many({"players": []})
     emit('update_players', list(rooms[room].keys()), room=room)
+
 
 @socketio.on('move')
 def handle_move(data):
@@ -488,12 +516,22 @@ def handle_move(data):
         'row': row,
         'col': col
     }, room=room, include_self=False)
-    
+
     goal_row = 19
     goal_col = 19
     if row == goal_row and col == goal_col:
         logger.info(f"Game: Player '{username}' has won the game in room '{room}'!")
+        players = mongo.db.ingame.find_one({"room": room})
+        print(players)
+        players = players["players"]
+        for player in players:
+            if player == username:
+                mongo.db.users.update_one({"username": username}, {"$inc": {"won": 1}})
+            else:
+                mongo.db.users.update_one({"username": player}, {"$inc": {"lose": 1}})
+            mongo.db.users.update_one({"username": player}, {"$inc": {"played": 1}})
         emit('player_won', {'winner': username}, room=room)
+
 
 # Routes
 @app.route('/game')
@@ -502,23 +540,27 @@ def game():
     room = request.args.get('room')
     return render_template('game.html', room=room, username=current_user.username)
 
+
 # Configuration for file uploads
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+
 def allowed_file(filename):
     return (
-        '.' in filename and
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+            '.' in filename and
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
     )
+
 
 @app.route('/upload', methods=['POST'])
 @login_required
 def upload_picture():
     if 'picture' not in request.files:
-        logger.warning(f"Upload failed: User '{current_user.username}' attempted to upload but no file part was included.")
+        logger.warning(
+            f"Upload failed: User '{current_user.username}' attempted to upload but no file part was included.")
         flash('No file part')
         return redirect(request.referrer or '/')
 
@@ -547,11 +589,34 @@ def upload_picture():
     flash('Invalid file type')
     return redirect(request.referrer or '/')
 
+
+@app.route('/records')
+@login_required
+def record():
+    username = current_user.username
+    user = mongo.db.users.find_one({'username': username}, {'won': 1, 'lose': 1, 'played': 1, '_id': 0})
+    if not user:
+        return "user not found", 404
+    return render_template('record.html', stats=user)
+
+
+@app.route('/leaderboard')
+def leaderboard():
+    top_players = mongo.db.users.find(
+        {},
+        {'username': 1, 'won': 1, '_id': 0}
+    ).sort('won', -1).limit(10)
+
+    players = list(top_players)
+    return render_template('leaderboard.html', players=players)
+
+
 # Error template route - for error handling testing
 @app.route('/trigger-error')
 def trigger_error():
     # Deliberately cause an error to test error logging
     raise Exception("This is a deliberate error to test error logging")
+
 
 # Wrap the application in a try/except to catch all unhandled errors
 try:
@@ -562,3 +627,4 @@ except Exception as e:
     logger.critical(f"Critical error on application startup: {str(e)}")
     logger.critical(traceback.format_exc())
     raise  # Re-raise the exception after logging
+
