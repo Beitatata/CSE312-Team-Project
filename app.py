@@ -100,13 +100,18 @@ class LoggingMiddleware:
             # Remove auth tokens from headers
             filtered_headers = []
             for name, value in response_captured['headers']:
-                if name.lower() == 'set-cookie' and 'session=' in value:
-                    # Remove the session token but keep other cookies
+                if name.lower() == 'set-cookie':
                     parts = value.split(';')
-                    if any(part.strip().startswith('session=') for part in parts):
-                        cookie_parts = [part for part in parts if not part.strip().startswith('session=')]
+                    if any(part.strip().startswith('session=') for part in parts) or any(
+                            part.strip().startswith('auth_token=') for part in parts):
+                        cookie_parts = [part for part in parts if not (
+                                part.strip().startswith('session=') or
+                                part.strip().startswith('auth_token=')
+                        )]
                         if cookie_parts:
                             filtered_headers.append((name, '; '.join(cookie_parts)))
+                    else:
+                        filtered_headers.append((name, value))
                 else:
                     filtered_headers.append((name, value))
 
@@ -148,7 +153,7 @@ def log_request_info():
         # Filter out sensitive cookies (like session tokens)
         cookies = {}
         for k, v in request.cookies.items():
-            if k != 'session':  # Skip session token
+            if k != 'session' and k != 'auth_token':  # Skip token
                 cookies[k] = v
 
         # Base log data
@@ -177,7 +182,10 @@ def log_request_info():
             if k.lower() == 'cookie':
                 # Parse cookies and remove session
                 cookie_parts = v.split(';')
-                filtered_cookies = [c for c in cookie_parts if not c.strip().startswith('session=')]
+                filtered_cookies = [c for c in cookie_parts if not (
+                        c.strip().startswith('session=') or
+                        c.strip().startswith('auth_token=')
+                )]
                 if filtered_cookies:
                     filtered_headers[k] = '; '.join(filtered_cookies)
             elif k.lower() != 'authorization':
@@ -344,7 +352,7 @@ def login():
             # Log failed login attempt - user doesn't exist
             logger.warning(f"Login failed: Username '{username}' does not exist.")
             flash('Invalid username or password.')
-            return render_template('login.html')
+            return render_template('login.html'), 400
 
         if bcrypt.checkpw(password.encode('utf-8'), user_data['password']):
             user = User(user_data)
@@ -359,6 +367,7 @@ def login():
             # Log failed login attempt - wrong password
             logger.warning(f"Login failed: User '{username}' tried to log in with the wrong password.")
             flash('Invalid username or password.')
+            return render_template('login.html'), 400
 
     return render_template('login.html')
 
@@ -432,7 +441,7 @@ def handle_disconnect():
                 del rooms[room][username]
                 emit('player_left', username, room=room)
                 emit('update_players', list(rooms[room].keys()), room=room)
-                logger.info(f"Socket: Player '{username}' disconnected from game room '{room}'.")
+
                 # Log player left game
                 logger.info(f"Game: Player '{username}' left game room '{room}'.")
                 break
@@ -443,6 +452,7 @@ def handle_start_game(data):
     # 1) Generate a unique room name for this game
     seed = random.randint(0, 2 ** 31 - 1)
     room = data.get('room') or str(uuid.uuid4())
+    mongo.db.ingame.delete_many({"players": []})
     mongo.db.ingame.insert_one({"room": room, "players": []})
 
     # Log game starting
@@ -492,9 +502,8 @@ def handle_join_room(data):
         'col': 1
     }, room=room, include_self=False)
 
-    # Sync player list for everyone
     mongo.db.ingame.update_one({"room": room}, {"$push": {"players": username}})
-    mongo.db.ingame.delete_many({"players": []})
+    # Sync player list for everyone
     emit('update_players', list(rooms[room].keys()), room=room)
 
 
@@ -522,7 +531,6 @@ def handle_move(data):
     if row == goal_row and col == goal_col:
         logger.info(f"Game: Player '{username}' has won the game in room '{room}'!")
         players = mongo.db.ingame.find_one({"room": room})
-        print(players)
         players = players["players"]
         for player in players:
             if player == username:
@@ -589,7 +597,6 @@ def upload_picture():
     flash('Invalid file type')
     return redirect(request.referrer or '/')
 
-
 @app.route('/records')
 @login_required
 def record():
@@ -598,7 +605,6 @@ def record():
     if not user:
         return "user not found", 404
     return render_template('record.html', stats=user)
-
 
 @app.route('/leaderboard')
 def leaderboard():
@@ -609,6 +615,7 @@ def leaderboard():
 
     players = list(top_players)
     return render_template('leaderboard.html', players=players)
+
 
 
 # Error template route - for error handling testing
@@ -627,4 +634,3 @@ except Exception as e:
     logger.critical(f"Critical error on application startup: {str(e)}")
     logger.critical(traceback.format_exc())
     raise  # Re-raise the exception after logging
-
