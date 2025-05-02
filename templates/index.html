@@ -56,6 +56,9 @@
                 <img src="{{ url_for('static', filename='uploads/' ~ current_user.avatar) }}" alt="User Avatar" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:15px;">
                 {% endif %}
                 <h2>Hello, {{ current_user.username }}!</h2>
+                <div class="btn-container">
+                    <a href="{{ url_for('achievements') }}" class="btn btn-primary">Achievements</a>
+                </div>
                 <p>You are now logged in and ready to start your adventure.</p>
                 <div class="btn-container">
                     <a href="{{ url_for('lobby') }}" class="btn btn-primary">Lobby</a>

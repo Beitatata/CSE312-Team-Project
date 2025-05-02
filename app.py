@@ -5,7 +5,7 @@ import traceback
 import json
 import pytz
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, flash, Response, g
+from flask import Flask, render_template, request, redirect, url_for, flash, Response, g, jsonify
 from flask_pymongo import PyMongo
 from flask_login import (
     LoginManager, UserMixin,
@@ -642,7 +642,30 @@ def leaderboard():
     players = list(top_players)
     return render_template('leaderboard.html', players=players)
 
+@app.route('/api/userinfo')
+@login_required
+def api_userinfo():
+    username = current_user.username
+    if not username:
+        return jsonify({"error": "未登录"}), 401
 
+    user = mongo.db.users.find_one({"username": username}, {
+        "_id": 0,
+        "username": 1,
+        "won": 1,
+        "lose": 1,
+        "played": 1,
+        "level": 1
+    })
+
+    if not user:
+        return jsonify({"error": "用户不存在"}), 404
+
+    return jsonify(user)
+
+@app.route('/achievements')
+def achievements():
+    return render_template('achievements.html')
 
 # Error template route - for error handling testing
 @app.route('/trigger-error')

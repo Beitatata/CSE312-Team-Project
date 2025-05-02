@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Player Records</title>
+  <title>Achievements</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap"
     rel="stylesheet"
@@ -18,22 +18,24 @@
       --card-bg: rgba(30, 30, 47, 0.8);
       --error-color: #e74c3c;
     }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #000);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
       color: var(--light-color);
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: start;
+      padding: 2rem;
       position: relative;
     }
 
@@ -61,67 +63,26 @@
       50% { transform: translate(-25px, -25px); }
     }
 
-    .stats-container {
+    .container {
       position: relative;
       z-index: 1;
-      text-align: center;
-      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
       background: var(--ui-dark);
       border: 2px solid var(--ui-border);
       border-radius: 16px;
+      padding: 2rem;
       box-shadow: 0 0 20px var(--primary-color);
     }
 
     h1 {
       font-family: 'Orbitron', sans-serif;
       font-size: 2rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
       color: var(--secondary-color);
+      text-align: center;
       text-transform: uppercase;
-      letter-spacing: 1px;
     }
-
-    .stats {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 2px solid var(--ui-border);
-      border-radius: 12px;
-      width: 140px;
-      padding: 1rem;
-      box-shadow: 0 0 10px var(--primary-color);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 20px var(--secondary-color);
-    }
-
-    .card h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: var(--primary-color);
-    }
-    .extra-stats {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.special-card {
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  border: 2px solid #3a8dde;
-  box-shadow: 0 0 15px rgba(58, 141, 222, 0.6);
-}
     .header-buttons {
       display: flex;
       justify-content: center;
@@ -146,54 +107,96 @@
     .btn-home:hover { background: var(--light-color); color: var(--dark-bg); }
     .btn-danger { border-color: var(--error-color); }
     .btn-danger:hover { background: var(--error-color); color: var(--light-color); }
-    .card p {
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .achievement {
+      background: var(--card-bg);
+      border: 2px solid var(--ui-border);
+      border-left: 10px solid;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 10px var(--primary-color);
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
-    @media (max-width: 480px) {
-      .stats {
-        flex-direction: column;
-        align-items: center;
-      }
-      .card {
-        width: 100%;
-        max-width: 220px;
-      }
+    .achievement.unlocked {
+      border-left-color: #4caf50;
+    }
+
+    .achievement.locked {
+      border-left-color: #777;
+      opacity: 0.5;
+    }
+
+    .achievement:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 16px var(--secondary-color);
+    }
+
+    .achievement strong {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      color: var(--primary-color);
+      display: block;
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="stats-container">
-    <div class="header-buttons">
+  <div class="container">
+      <div class="header-buttons">
       <a href="{{ url_for('index') }}" class="btn btn-home">Home</a>
       <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
     </div>
-    <h1>Welcome, {{ current_user.username }}</h1>
-    <div class="stats">
-      <div class="card">
-        <h2>{{ stats.won }}</h2>
-        <p>Wins</p>
-      </div>
-      <div class="card">
-        <h2>{{ stats.lose }}</h2>
-        <p>Losses</p>
-      </div>
-      <div class="card">
-        <h2>{{ stats.played }}</h2>
-        <p>Total Played</p>
-      </div>
-    </div>
-      <div class="extra-stats">
-  <div class="card special-card">
-    <h2>{{ current_user.level }}</h2>
-    <p>Level</p>
+    <h1 id="username">Loading...</h1>
+    <div id="achievements"></div>
   </div>
-  <div class="card special-card">
-    <h2>{{ current_user.exp }}/100</h2>
-    <p>EXP</p>
-  </div>
-  </div>
+
+  <script>
+    async function loadAchievements() {
+      try {
+        const res = await fetch('/api/userinfo');
+        const data = await res.json();
+
+        document.getElementById('username').textContent = `Achievements of ${data.username}`;
+
+        const achievements = [
+          {
+            name: 'Master',
+            desc: `Win 10 games! (Progress: ${data.won}/10)`,
+            unlocked: data.won >= 10
+          },
+          {
+            name: 'Never Giving Up',
+            desc: `Lose 10 games. (Progress: ${data.lose}/10)`,
+            unlocked: data.lose >= 10
+          },
+          {
+            name: 'Game Lover',
+            desc: `Play 20 games. (Progress: ${data.played}/20)`,
+            unlocked: data.played >= 20
+          },
+          {
+            name: 'Hidden Master',
+            desc: `Reach level 10. (Progress: ${data.level}/10)`,
+            unlocked: data.level >= 10
+          }
+        ];
+
+        const container = document.getElementById('achievements');
+        achievements.forEach(a => {
+          const div = document.createElement('div');
+          div.className = 'achievement ' + (a.unlocked ? 'unlocked' : 'locked');
+          div.innerHTML = `<strong>${a.name}</strong><p>${a.desc}</p>`;
+          container.appendChild(div);
+        });
+
+      } catch (err) {
+        document.getElementById('username').textContent = 'Failed to load';
+        console.error('Error loading achievements:', err);
+      }
+    }
+
+    loadAchievements();
+  </script>
 </body>
 </html>
