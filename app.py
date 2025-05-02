@@ -281,11 +281,11 @@ class User(UserMixin):
         self.username = user_data['username']
         self.password_hash = user_data['password']
         self.avatar = user_data.get('avatar')
-        self.won = 0
-        self.lose = 0
-        self.played = 0
-        self.exp = 0
-        self.level = 1
+        self.won = user_data.get('won')
+        self.lose = user_data.get('lose')
+        self.played = user_data.get('played')
+        self.exp = user_data.get('exp')
+        self.level = user_data.get('level')
 
     def get_id(self):
         return self.id
@@ -530,11 +530,14 @@ def handle_move(data):
         'col': col
     }, room=room, include_self=False)
 
-    goal_row = 1
-    goal_col = 2
-    goal_row2 = 2
-    goal_col2 = 1
-    if (row == goal_row and col == goal_col) or (row == goal_row2 and col == goal_col2):
+    goal_row = 19
+    goal_col = 19
+    # goal_row = 1
+    # goal_col = 2
+    # goal_row2 = 2
+    # goal_col2 = 1
+    # if (row == goal_row and col == goal_col) or (row == goal_row2 and col == goal_col2):
+    if row == goal_row and col == goal_col:
         logger.info(f"Game: Player '{username}' has won the game in room '{room}'!")
         players = mongo.db.ingame.find_one({"room": room})
         players = players["players"]
@@ -544,9 +547,9 @@ def handle_move(data):
                 mongo.db.users.update_one({"username": username}, {"$inc": {"exp": 10}})
                 temp = mongo.db.users.find_one({"username": player})
                 if temp:
-                    if temp.get("exp", 0) >= 100:
+                    if temp.get("exp", 0) >= 30:
                         new_level = temp.get("level", 1) + 1
-                        new_exp = temp["exp"] - 100
+                        new_exp = temp["exp"] - 30
                         mongo.db.users.update_one(
                             {"username": player},
                             {"$set": {"level": new_level, "exp": new_exp}}
@@ -556,9 +559,9 @@ def handle_move(data):
                 mongo.db.users.update_one({"username": player}, {"$inc": {"exp": 2}})
                 temp = mongo.db.users.find_one({"username": player})
                 if temp:
-                    if temp.get("exp", 0) >= 100:
+                    if temp.get("exp", 0) >= 30:
                         new_level = temp.get("level", 1) + 1
-                        new_exp = temp["exp"] - 100
+                        new_exp = temp["exp"] - 30
                         mongo.db.users.update_one(
                             {"username": player},
                             {"$set": {"level": new_level, "exp": new_exp}}
