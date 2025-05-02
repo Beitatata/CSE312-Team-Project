@@ -284,6 +284,8 @@ class User(UserMixin):
         self.won = 0
         self.lose = 0
         self.played = 0
+        self.exp = 0
+        self.level = 1
 
     def get_id(self):
         return self.id
@@ -328,6 +330,8 @@ def register():
             "won": 0,
             "lose": 0,
             "played": 0,
+            "exp": 0,
+            "level": 1,
             'created_at': format_timestamp()
         })
 
@@ -526,17 +530,39 @@ def handle_move(data):
         'col': col
     }, room=room, include_self=False)
 
-    goal_row = 19
-    goal_col = 19
-    if row == goal_row and col == goal_col:
+    goal_row = 1
+    goal_col = 2
+    goal_row2 = 2
+    goal_col2 = 1
+    if (row == goal_row and col == goal_col) or (row == goal_row2 and col == goal_col2):
         logger.info(f"Game: Player '{username}' has won the game in room '{room}'!")
         players = mongo.db.ingame.find_one({"room": room})
         players = players["players"]
         for player in players:
             if player == username:
                 mongo.db.users.update_one({"username": username}, {"$inc": {"won": 1}})
+                mongo.db.users.update_one({"username": username}, {"$inc": {"exp": 10}})
+                temp = mongo.db.users.find_one({"username": player})
+                if temp:
+                    if temp.get("exp", 0) >= 100:
+                        new_level = temp.get("level", 1) + 1
+                        new_exp = temp["exp"] - 100
+                        mongo.db.users.update_one(
+                            {"username": player},
+                            {"$set": {"level": new_level, "exp": new_exp}}
+                        )
             else:
                 mongo.db.users.update_one({"username": player}, {"$inc": {"lose": 1}})
+                mongo.db.users.update_one({"username": player}, {"$inc": {"exp": 2}})
+                temp = mongo.db.users.find_one({"username": player})
+                if temp:
+                    if temp.get("exp", 0) >= 100:
+                        new_level = temp.get("level", 1) + 1
+                        new_exp = temp["exp"] - 100
+                        mongo.db.users.update_one(
+                            {"username": player},
+                            {"$set": {"level": new_level, "exp": new_exp}}
+                        )
             mongo.db.users.update_one({"username": player}, {"$inc": {"played": 1}})
         emit('player_won', {'winner': username}, room=room)
 
