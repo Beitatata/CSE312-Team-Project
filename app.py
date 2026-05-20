@@ -392,7 +392,7 @@ def logout():
 socketio = SocketIO(app,
                     cors_allowed_origins="*",
                     ssl_context=None)
-online_users = set()
+online_users = []
 
 
 @app.route('/lobby')
@@ -405,9 +405,10 @@ def lobby():
 def handle_join_lobby():
     if current_user.is_authenticated:
         username = current_user.username
-        online_users.add(username)
+        if username not in online_users:
+            online_users.append(username)
         join_room('lobby')
-        emit('update_user_list', list(online_users), room='lobby')
+        emit('update_user_list', online_users, room='lobby')
 
         # Log user joined lobby
         logger.info(f"Socket: User '{username}' joined lobby.")
@@ -417,9 +418,10 @@ def handle_join_lobby():
 def handle_leave_lobby():
     if current_user.is_authenticated:
         username = current_user.username
-        online_users.discard(username)
+        if username in online_users:
+            online_users.remove(username)
         leave_room('lobby')
-        emit('update_user_list', list(online_users), room='lobby')
+        emit('update_user_list',online_users, room='lobby')
 
         # Log user left lobby
         logger.info(f"Socket: User '{username}' left lobby.")
@@ -429,9 +431,10 @@ def handle_leave_lobby():
 def handle_disconnect():
     if current_user.is_authenticated:
         username = current_user.username
-        online_users.discard(username)
+        if username in online_users:
+            online_users.remove(username)
         leave_room('lobby')
-        emit('update_user_list', list(online_users), room='lobby')
+        emit('update_user_list', online_users, room='lobby')
         mongo.db.ingame.update_one({"players": username}, {"$pull": {"players": username}})
 
         # Log user disconnected
